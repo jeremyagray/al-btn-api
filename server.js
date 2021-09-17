@@ -87,14 +87,14 @@ async function start() {
     }));
 
     // Favicon serving middleware.
-    // app.use(favicon(path.join(process.cwd(), 'public', 'favicon.ico')));
+    app.use(favicon(path.join(process.cwd(), 'public', 'favicon.ico')));
     
     // Use body parser for post data.
     app.use(express.urlencoded({extended: false}));
     app.use(express.json());
 
     // Set static directory to root.
-    // app.use(express.static(path.join(process.cwd(), 'public')));
+    app.use(express.static(path.join(process.cwd(), 'public')));
 
     // Set view directory and view engine.
     // app.set('views', path.join(process.cwd(), 'views'));
