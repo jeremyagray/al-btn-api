@@ -1,0 +1,86 @@
+{
+  "author": "Jeremy A Gray <gray@flyquackswim.com> (http://www.flyquackswim.com/)",
+  "bugs": {
+    "url": "https://github.com/jeremyagray/al-btn-api/issues"
+  },
+  "dependencies": {
+    "cors": "^2.8.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.0",
+    "express-validator": "^6.9.0",
+    "helmet": "^4.4.0",
+    "mongoose": "^5.11.0",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.0",
+    "serve-favicon": "^2.5.0",
+    "winston": "^3.3.3"
+  },
+  "description": "Alabama:  By the Numbers API",
+  "devDependencies": {
+    "chai": "^4.3.0",
+    "chai-datetime": "^1.8.0",
+    "chai-http": "^4.3.0",
+    "eslint": "^7.20.0",
+    "eslint-plugin-security": "^1.4.0",
+    "jsdoc": "^3.6.0",
+    "mocha": "^8.3.0",
+    "nyc": "^15.1.0"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "homepage": "https://github.com/jeremyagray/al-btn-api",
+  "license": "MIT",
+  "main": "server.js",
+  "name": "al-btn-api",
+  "pccc": {
+    "header_length": 50,
+    "body_length": 72,
+    "rewrap": true,
+    "spell_check": false,
+    "repair": false,
+    "types": [
+      "build",
+      "ci",
+      "depends",
+      "docs",
+      "feat",
+      "fix",
+      "perf",
+      "refactor",
+      "release",
+      "style",
+      "test"
+    ],
+    "scopes": [
+      "data",
+      "auth"
+    ],
+    "footers": [
+      "signed-off-by"
+    ],
+    "required_footers": [
+      "signed-off-by"
+    ]
+  },
+  "scripts": {
+    "cover": "nyc --reporter=text --reporter=html mocha --recursive --exit tests",
+    "docs": "jsdoc -c ./.jsdoc.json",
+    "lint": "eslint '**/*.js'",
+    "lint-fix": "eslint '**/*.js' --fix",
+    "start": "nodemon server.js",
+    "test": "mocha --recursive --exit tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremyagray/al-btn-api.git"
+  },
+  "keywords": [
+    "node",
+    "express"
+  ],
+  "version": "0.0.1"
+}

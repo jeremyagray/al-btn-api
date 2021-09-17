@@ -1,0 +1,15 @@
+# Emacs.
+*~
+
+# Node/npm.
+*-debug.log*
+*-error.log*
+.DS_Store
+.env
+.env.*
+.nyc_output/
+.pnp
+.pnp.js
+build
+coverage/
+node_modules
