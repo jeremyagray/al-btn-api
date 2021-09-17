@@ -9,7 +9,6 @@
 // Load the environment variables.
 require('dotenv').config();
 
-const bodyParser = require('body-parser');
 const cors = require('cors');
 const express = require('express');
 const favicon = require('serve-favicon');
@@ -26,8 +25,7 @@ const helmet = require('./middleware/helmet.js');
 const logger = require('./middleware/logger.js');
 
 // Routing.
-const helloRoute = require('./routes/hello.js');
-const urlRoutes = require('./routes/url.js');
+// const helloRoute = require('./routes/hello.js');
 
 // Express.
 const app = express();
@@ -89,28 +87,27 @@ async function start() {
     }));
 
     // Favicon serving middleware.
-    app.use(favicon(path.join(process.cwd(), 'public', 'favicon.ico')));
+    // app.use(favicon(path.join(process.cwd(), 'public', 'favicon.ico')));
     
     // Use body parser for post data.
-    app.use(bodyParser.urlencoded({extended: false}));
-    app.use(bodyParser.json());
+    app.use(express.urlencoded({extended: false}));
+    app.use(express.json());
 
     // Set static directory to root.
-    app.use(express.static(path.join(process.cwd(), 'public')));
+    // app.use(express.static(path.join(process.cwd(), 'public')));
 
     // Set view directory and view engine.
-    app.set('views', path.join(process.cwd(), 'views'));
-    app.set('view engine', 'pug');
+    // app.set('views', path.join(process.cwd(), 'views'));
+    // app.set('view engine', 'pug');
 
     // Serve index.
-    app.route('/')
-      .get(function(request, response) {
-        return response.render('index');
-      });
+    // app.route('/')
+    //   .get(function(request, response) {
+    //     return response.render('index');
+    //   });
 
     // Application routes.
-    app.use('/api/hello', helloRoute);
-    app.use('/api/shorturl', urlRoutes);
+    // app.use('/api/hello', helloRoute);
     
     // 404 middleware.
     app.use((request, response) => {
