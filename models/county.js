@@ -15,13 +15,37 @@ const countySchema = new mongoose.Schema(
       'type': String,
       'required': true
     },
-    'fips': {
+    'cname': {
       'type': String,
       'required': true
     },
+    'fips': {
+      'type': String,
+      'required': true,
+      'unique': true,
+    },
     'seat': {
       'type': String,
-      'required': false
+      'required': true
+    },
+    'seatLocation': {
+      'type': {
+        'type': 'String',
+        'enum': ['Point'],
+        'required': true
+      },
+      'coordinates': {
+        'type': [Number],
+        'required': true
+      }
+    },
+    'established': {
+      'type': Date,
+      'required': true
+    },
+    'code': {
+      'type': String,
+      'required': true
     }
   });
 
