@@ -56,8 +56,9 @@
       "test"
     ],
     "scopes": [
-      "data",
-      "auth"
+      "api",
+      "auth",
+      "data"
     ],
     "footers": [
       "signed-off-by"
