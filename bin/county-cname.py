@@ -13,18 +13,34 @@
 import json
 import sys
 
-fn = sys.argv[1]
+# Load the county canonical names.
+cnames = []
 
-with open(fn, "r") as f:
-    fips = json.load(f)
+with open(sys.argv[1], "r") as f:
+    for line in f:
+        (name, cname) = line.strip().split(",")
+        cnames.append({
+            "name": str(name),
+            "cname": str(cname),
+        })
 
+
+def getCountyCanonicalName(name):
+    """Get county canonical county name for provided name."""
+    for county in cnames:
+        if county["name"] == name:
+            return county["cname"]
+
+
+# Load the county dataset.
 data = []
+with open(sys.argv[2], "r") as f:
+    data = json.load(f)
 
-for county in fips:
-    data.append({
-        "name": str(county["name"]),
-        "cname": str(county["name"]),
-        "fips": str(county["fips"]),
-    })
+# Merge the codes into the data.
+merged = []
+for obj in data:
+    obj["cname"] = getCountyCanonicalName(obj["name"])
+    merged.append(obj)
 
-print(json.dumps(data, indent=2))
+print(json.dumps(merged, indent=2))

@@ -22,6 +22,14 @@ for line in raw.iter_lines():
     data.append({
         "name": fields[3].removesuffix(" County"),
         "fips": str(fields[1]) + str(fields[2]),
+        "cname": "",
+        "seat": "",
+        "seatLocation": {
+            "type": "Point",
+            "coordinates": [],
+        },
+        "established": "",
+        "code": "",
     })
 
 print(json.dumps(data, indent=2))
