@@ -53,7 +53,7 @@ with open(sys.argv[1], "r") as f:
 # Merge the seat and establishment dates into the data.
 merged = []
 for obj in data:
-    obj["seat"] = getSeat(obj["name"])
+    obj["seat"]["name"] = getSeat(obj["name"])
     obj["established"] = getEstablished(obj["name"])
     merged.append(obj)
 
