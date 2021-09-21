@@ -46,21 +46,11 @@ const logger = require('../middleware/logger.js');
 async function getAll(request, response) {
   logger.debug('request:  GET /api/v1/counties/all');
 
-  const countyModel = County();
-
   try {
-    const counties = await countyModel.find({}).sort({'fips': 1}).exec();
-    let responseJSON = [];
-
-    counties.forEach((county) => {
-      responseJSON.push({
-        'name': county.name,
-        'fips': county.fips,
-        'seat': county.seat
-      });
-    });
-
-    return response.json(responseJSON);
+    return response.json(await County()
+      .find({}, {'_id': false, '__v': false})
+      .sort({'fips': 1})
+      .exec());
   } catch {
     logger.error('GET /api/v1/counties/all failed to return documents');
     return response
