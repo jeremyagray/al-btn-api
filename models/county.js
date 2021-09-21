@@ -25,18 +25,24 @@ const countySchema = new mongoose.Schema(
       'unique': true,
     },
     'seat': {
-      'type': String,
-      'required': true
-    },
-    'seatLocation': {
-      'type': {
-        'type': 'String',
-        'enum': ['Point'],
+      'name': {
+        'type': String,
         'required': true
       },
-      'coordinates': {
-        'type': [Number],
+      'geoid': {
+        'type': String,
         'required': true
+      },
+      'location': {
+        'type': {
+          'type': 'String',
+          'enum': ['Point'],
+          'required': true
+        },
+        'coordinates': {
+          'type': [Number],
+          'required': true
+        }
       }
     },
     'established': {
