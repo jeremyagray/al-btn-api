@@ -25,15 +25,15 @@ const helmet = require('./middleware/helmet.js');
 const logger = require('./middleware/logger.js');
 
 // Routing.
-// const helloRoute = require('./routes/hello.js');
+const countyRoute = require('./routes/county.js');
 
 // Express.
 const app = express();
 
 // Configuration variables.
 const port = process.env.PORT || 3000;
-const name = 'fcc-amp-url-shortener';
-const version = '0.4.0';
+const name = 'al-btn-api';
+const version = '0.0.1';
 
 async function start() {
   // Configure mongoose.
@@ -107,7 +107,7 @@ async function start() {
     //   });
 
     // Application routes.
-    // app.use('/api/hello', helloRoute);
+    app.use('/api/v1/counties', countyRoute);
     
     // 404 middleware.
     app.use((request, response) => {
