@@ -22,6 +22,13 @@ exports.validationErrorReporterJSON = function(request, response, next) {
     logger.debug('validation FIPS:  no FIPS in request');
   }
 
+  // Check for code errors.
+  if (request.params.code) {
+    logger.debug(`validation code:  ${request.params.code}`);
+  } else {
+    logger.debug('validation code:  no code in request');
+  }
+
   // Bail on errors.
   if (! errors.isEmpty()) {
     logger.debug('validation failed');
@@ -43,4 +50,14 @@ exports.validateFips = [
     .trim()
     .isNumeric()
     .withMessage('`fips` should be a five-digit numerical string.')
+];
+
+exports.validateCode = [
+  check('code')
+    .notEmpty()
+    .escape()
+    .stripLow(true)
+    .trim()
+    .isNumeric()
+    .withMessage('`code` should be a number between 1 and 67 inclusively..')
 ];

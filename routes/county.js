@@ -23,10 +23,10 @@ router.get('/fips/:fips',
   countyController.getByFips
 );
 
-router.get('/name/:name',
-  validation.validateName,
+router.get('/code/:code',
+  validation.validateCode,
   validation.validationErrorReporterJSON,
-  countyController.getCountyByName
+  countyController.getByCode
 );
 
 module.exports = router;

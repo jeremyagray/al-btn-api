@@ -81,3 +81,22 @@ async function getByFips(request, response) {
 }
 
 exports.getByFips = getByFips;
+
+async function getByCode(request, response) {
+  logger.debug(`request:  GET /api/v1/counties/code/${request.params.code}`);
+
+  try {
+    return response.json(await County()
+      .findOne({'code': request.params.code}, {'_id': false, '__v': false})
+      .exec());
+  } catch {
+    logger.error(`GET /api/v1/counties/code/${request.params.code} failed to return documents`);
+    return response
+      .status(500)
+      .json({
+        'error': 'server error'
+      });
+  }
+}
+
+exports.getByCode = getByCode;
