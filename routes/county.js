@@ -17,10 +17,10 @@ router.get('/all',
   countyController.getAll
 );
 
-router.get('/fips/:num',
+router.get('/fips/:fips',
   validation.validateFips,
   validation.validationErrorReporterJSON,
-  countyController.getCountyByFips
+  countyController.getByFips
 );
 
 router.get('/name/:name',

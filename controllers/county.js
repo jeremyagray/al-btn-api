@@ -62,3 +62,22 @@ async function getAll(request, response) {
 }
 
 exports.getAll = getAll;
+
+async function getByFips(request, response) {
+  logger.debug(`request:  GET /api/v1/counties/fips/${request.params.fips}`);
+
+  try {
+    return response.json(await County()
+      .findOne({'fips': request.params.fips}, {'_id': false, '__v': false})
+      .exec());
+  } catch {
+    logger.error(`GET /api/v1/counties/fips/${request.params.fips} failed to return documents`);
+    return response
+      .status(500)
+      .json({
+        'error': 'server error'
+      });
+  }
+}
+
+exports.getByFips = getByFips;

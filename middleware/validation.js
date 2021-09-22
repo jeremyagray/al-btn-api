@@ -15,22 +15,11 @@ exports.validationErrorReporterJSON = function(request, response, next) {
   // Grab errors.
   const errors = validationResult(request);
 
-  if (request.params.num) {
-    logger.debug(`validation num:  ${request.params.num}`);
+  // Check for FIPS errors.
+  if (request.params.fips) {
+    logger.debug(`validation FIPS:  ${request.params.fips}`);
   } else {
-    logger.debug('validation num:  no num in request');
-  }
-
-  if (request.body.url) {
-    logger.debug(`validation url:  ${request.body.url}`);
-  } else {
-    logger.debug('validation url:  no URL in request');
-  }
-
-  if (request.body.title) {
-    logger.debug(`validation title:  ${request.body.title}`);
-  } else {
-    logger.debug('validation title:  no title in request');
+    logger.debug('validation FIPS:  no FIPS in request');
   }
 
   // Bail on errors.
@@ -46,30 +35,12 @@ exports.validationErrorReporterJSON = function(request, response, next) {
 };
 
 // Validation rules.
-exports.validateNumber = [
-  check('num')
+exports.validateFips = [
+  check('fips')
     .notEmpty()
     .escape()
     .stripLow(true)
     .trim()
     .isNumeric()
-    .isInt({'min': 1})
-    .withMessage('`num` should be a number.')
-];
-
-exports.validateURL = [
-  check('url')
-    .notEmpty()
-    .stripLow(true)
-    .trim()
-    .isURL({'require_valid_protocol': true})
-    .withMessage('url should be a valid URL.')
-];
-
-exports.validateTitle = [
-  check('title')
-    .stripLow(true)
-    .trim()
-    .isString()
-    .withMessage('title should be a string.')
+    .withMessage('`fips` should be a five-digit numerical string.')
 ];
