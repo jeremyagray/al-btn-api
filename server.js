@@ -38,9 +38,10 @@ const version = '0.0.1';
 async function start() {
   // Configure mongoose.
   const MONGOOSE_OPTIONS = {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false
+    'useCreateIndex': true,
+    'useNewUrlParser': true,
+    'useUnifiedTopology': true,
+    'useFindAndModify': false
   };
 
   try {
