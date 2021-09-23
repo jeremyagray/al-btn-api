@@ -55,6 +55,18 @@ describe('GET /api/v1/counties/all', async function() {
         // eslint-disable-next-line security/detect-object-injection
         expect(response.body[i]).to.have.property('seat');
         // eslint-disable-next-line security/detect-object-injection
+        expect(response.body[i].seat).to.have.property('name');
+        // eslint-disable-next-line security/detect-object-injection
+        expect(response.body[i].seat).to.have.property('geoid');
+        // eslint-disable-next-line security/detect-object-injection
+        expect(response.body[i].seat).to.have.property('location');
+        // eslint-disable-next-line security/detect-object-injection
+        expect(response.body[i].seat.location).to.have.property('type');
+        // eslint-disable-next-line security/detect-object-injection
+        expect(response.body[i].seat.location).to.have.property('coordinates');
+        // eslint-disable-next-line security/detect-object-injection
+        expect(response.body[i].seat.location.coordinates).to.be.a('array');
+        // eslint-disable-next-line security/detect-object-injection
         expect(response.body[i]).to.have.property('established');
         // eslint-disable-next-line security/detect-object-injection
         expect(response.body[i]).to.have.property('code');
