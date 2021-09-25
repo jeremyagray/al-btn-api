@@ -42,34 +42,35 @@ describe('GET /api/v1/counties/all', async function() {
         .get('/api/v1/counties/all');
 
       expect(response).to.have.status(200);
+      expect(response.body).to.be.a('object');
       expect(response.body.length).to.be.equal(67);
-      expect(response.body).to.be.a('array');
+      expect(response.body.counties).to.be.a('array');
 
-      for (let i = 0; i < response.body.length; i++) {
+      for (let i = 0; i < response.body.counties.length; i++) {
         // eslint-disable-next-line security/detect-object-injection
-        expect(response.body[i]).to.have.property('name');
+        expect(response.body.counties[i]).to.have.property('name');
         // eslint-disable-next-line security/detect-object-injection
-        expect(response.body[i]).to.have.property('cname');
+        expect(response.body.counties[i]).to.have.property('cname');
         // eslint-disable-next-line security/detect-object-injection
-        expect(response.body[i]).to.have.property('fips');
+        expect(response.body.counties[i]).to.have.property('fips');
         // eslint-disable-next-line security/detect-object-injection
-        expect(response.body[i]).to.have.property('seat');
+        expect(response.body.counties[i]).to.have.property('seat');
         // eslint-disable-next-line security/detect-object-injection
-        expect(response.body[i].seat).to.have.property('name');
+        expect(response.body.counties[i].seat).to.have.property('name');
         // eslint-disable-next-line security/detect-object-injection
-        expect(response.body[i].seat).to.have.property('geoid');
+        expect(response.body.counties[i].seat).to.have.property('geoid');
         // eslint-disable-next-line security/detect-object-injection
-        expect(response.body[i].seat).to.have.property('location');
+        expect(response.body.counties[i].seat).to.have.property('location');
         // eslint-disable-next-line security/detect-object-injection
-        expect(response.body[i].seat.location).to.have.property('type');
+        expect(response.body.counties[i].seat.location).to.have.property('type');
         // eslint-disable-next-line security/detect-object-injection
-        expect(response.body[i].seat.location).to.have.property('coordinates');
+        expect(response.body.counties[i].seat.location).to.have.property('coordinates');
         // eslint-disable-next-line security/detect-object-injection
-        expect(response.body[i].seat.location.coordinates).to.be.a('array');
+        expect(response.body.counties[i].seat.location.coordinates).to.be.a('array');
         // eslint-disable-next-line security/detect-object-injection
-        expect(response.body[i]).to.have.property('established');
+        expect(response.body.counties[i]).to.have.property('established');
         // eslint-disable-next-line security/detect-object-injection
-        expect(response.body[i]).to.have.property('code');
+        expect(response.body.counties[i]).to.have.property('code');
       }
 
     } catch (error) {

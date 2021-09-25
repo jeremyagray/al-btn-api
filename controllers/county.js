@@ -47,10 +47,15 @@ async function getAll(request, response) {
   logger.debug('request:  GET /api/v1/counties/all');
 
   try {
-    return response.json(await County()
+    const counties = await County()
       .find({}, {'_id': false, '__v': false})
       .sort({'fips': 1})
-      .exec());
+      .exec();
+
+    return response.json({
+      'length': counties.length,
+      'counties': counties
+    });
   } catch {
     logger.error('GET /api/v1/counties/all failed to return documents');
     return response
