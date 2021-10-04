@@ -6,9 +6,9 @@
 
 'use strict';
 
-const County = require('../models/county.js');
-const Nation = require('../models/nation.js');
-const State = require('../models/state.js');
+const County = require('../models/countyGeo.js');
+const Nation = require('../models/nationGeo.js');
+const State = require('../models/stateGeo.js');
 const logger = require('../middleware/logger.js');
 
 /*
