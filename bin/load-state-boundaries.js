@@ -32,8 +32,11 @@ async function load() {
     await stateModel.deleteMany({}).exec();
     for (let i = 0; i < states.features.length; i++) {
       await stateModel.create({
+        // eslint-disable-next-line security/detect-object-injection
         'name': states.features[i].properties.NAME,
+        // eslint-disable-next-line security/detect-object-injection
         'usps': states.features[i].properties.STUSPS,
+        // eslint-disable-next-line security/detect-object-injection
         'feature': states.features[i]
       });
     }
