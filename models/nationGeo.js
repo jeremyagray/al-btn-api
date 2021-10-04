@@ -20,7 +20,7 @@ const nationSchema = new mongoose.Schema(
   });
 
 function nationModel() {
-  return mongoose.model('Nation', nationSchema);
+  return mongoose.model('NationBoundary', nationSchema);
 }
 
 module.exports = nationModel;

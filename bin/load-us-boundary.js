@@ -9,7 +9,7 @@
 const mongoose = require('mongoose');
 
 // Use the API Nation model.
-const Nation = require('../models/nation.js');
+const Nation = require('../models/nationGeo.js');
 
 // The processed county data.
 const nation = require('../public/data/census/us-geo.json');

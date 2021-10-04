@@ -24,7 +24,7 @@ const stateSchema = new mongoose.Schema(
   });
 
 function stateModel() {
-  return mongoose.model('State', stateSchema);
+  return mongoose.model('StateBoundary', stateSchema);
 }
 
 module.exports = stateModel;

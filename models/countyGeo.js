@@ -24,7 +24,7 @@ const countySchema = new mongoose.Schema(
   });
 
 function countyModel() {
-  return mongoose.model('County', countySchema);
+  return mongoose.model('CountyBoundary', countySchema);
 }
 
 module.exports = countyModel;

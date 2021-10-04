@@ -9,7 +9,7 @@
 const mongoose = require('mongoose');
 
 // Use the API State model.
-const State = require('../models/state.js');
+const State = require('../models/stateGeo.js');
 
 // The processed county data.
 const states = require('../public/data/census/states-geo.json');
