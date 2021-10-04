@@ -61,6 +61,7 @@ async function getAllStates(request, response) {
     };
 
     for (let i = 0; i < states.length; i++) {
+      // eslint-disable-next-line security/detect-object-injection
       statesCollection.features.push(states[i].feature);
     }
 
@@ -91,6 +92,7 @@ async function getAllCountiesForStateByUSPS(request, response) {
     };
 
     for (let i = 0; i < counties.length; i++) {
+      // eslint-disable-next-line security/detect-object-injection
       countiesCollection.features.push(counties[i].feature);
     }
 
