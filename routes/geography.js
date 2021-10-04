@@ -33,4 +33,8 @@ router.get('/states/all',
 //   geoController.getByUsps
 // );
 
+router.get('/counties/state/usps/:usps/all',
+  geoController.getAllCountiesForStateByUSPS
+);
+
 module.exports = router;

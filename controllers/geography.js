@@ -77,3 +77,33 @@ async function getAllStates(request, response) {
 }
 
 exports.getAllStates = getAllStates;
+
+async function getAllCountiesForStateByUSPS(request, response) {
+  logger.debug('request:  GET /api/v1/geography/counties/state/usps/:usps/all');
+
+  try {
+    const counties = await County()
+      .find({'usps': request.params.usps.toUpperCase()}, {'_id': false, '__v': false})
+      .exec();
+    let countiesCollection = {
+      'type': 'FeatureCollection',
+      'features' : []
+    };
+
+    for (let i = 0; i < counties.length; i++) {
+      countiesCollection.features.push(counties[i].feature);
+    }
+
+    return response
+      .status(200)
+      .json(countiesCollection);
+  } catch {
+    return response
+      .status(500)
+      .json({
+        'error': 'server error'
+      });
+  }
+}
+
+exports.getAllCountiesForStateByUSPS = getAllCountiesForStateByUSPS;
