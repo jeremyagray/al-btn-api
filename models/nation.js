@@ -6,8 +6,7 @@
 
 'use strict';
 
-// eslint-disable-next-line no-unused-vars
-const GeoJSON = require('mongoose-geojson-schema');
+require('mongoose-geojson-schema');
 const mongoose = require('mongoose');
 
 // Create a nation schema and model.
