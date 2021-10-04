@@ -34,6 +34,8 @@ router.get('/states/all',
 // );
 
 router.get('/counties/state/usps/:usps/all',
+  validation.validateUSPS,
+  validation.validationErrorReporterJSON,
   geoController.getAllCountiesForStateByUSPS
 );
 
