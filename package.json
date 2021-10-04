@@ -10,6 +10,7 @@
     "express-validator": "^6.9.0",
     "helmet": "^4.4.0",
     "mongoose": "^5.11.0",
+    "mongoose-geojson-schema": "^2.1.7",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.0",
     "serve-favicon": "^2.5.0",

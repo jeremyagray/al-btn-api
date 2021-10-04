@@ -2280,6 +2280,11 @@ mongodb@3.6.11:
   optionalDependencies:
     saslprep "^1.0.0"
 
+mongoose-geojson-schema@^2.1.7:
+  version "2.1.7"
+  resolved "https://registry.yarnpkg.com/mongoose-geojson-schema/-/mongoose-geojson-schema-2.1.7.tgz#4d10947f2514930d9da6dc630664abe56e96133f"
+  integrity sha512-PsJSco/3t0jTso6FELyaOzBP11U3LuyNvF/rvAxYZNe/BRbor9Y2YACN/vA+aDOuPkLkIod1tVq1MOBdEax4Yg==
+
 mongoose-legacy-pluralize@1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/mongoose-legacy-pluralize/-/mongoose-legacy-pluralize-1.0.2.tgz#3ba9f91fa507b5186d399fb40854bff18fb563e4"
