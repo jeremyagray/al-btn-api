@@ -59,5 +59,16 @@ exports.validateCode = [
     .stripLow(true)
     .trim()
     .isNumeric()
-    .withMessage('`code` should be a number between 1 and 67 inclusively..')
+    .withMessage('`code` should be a number between 1 and 67, inclusive.')
+];
+
+exports.validateUSPS = [
+  check('usps')
+    .notEmpty()
+    .escape()
+    .stripLow(true)
+    .trim()
+    .isAlpha()
+    .isLength({'min': '2', 'max': '2'})
+    .withMessage('`usps` should be a two-letter USPS state abbreviation.')
 ];
