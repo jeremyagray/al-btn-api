@@ -47,3 +47,33 @@ async function getNation(request, response) {
 }
 
 exports.getNation = getNation;
+
+async function getAllStates(request, response) {
+  logger.debug('request:  GET /api/v1/geography/states/all');
+
+  try {
+    const states = await State()
+      .find({}, {'_id': false, '__v': false})
+      .exec();
+    let statesCollection = {
+      'type': 'FeatureCollection',
+      'features' : []
+    };
+
+    for (let i = 0; i < states.length; i++) {
+      statesCollection.features.push(states[i].feature);
+    }
+
+    return response
+      .status(200)
+      .json(statesCollection);
+  } catch {
+    return response
+      .status(500)
+      .json({
+        'error': 'server error'
+      });
+  }
+}
+
+exports.getAllStates = getAllStates;

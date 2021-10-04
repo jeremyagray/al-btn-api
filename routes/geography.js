@@ -17,9 +17,9 @@ router.get('/nation',
   geoController.getNation
 );
 
-// router.get('/states/all',
-//   geoController.getAllStates
-// );
+router.get('/states/all',
+  geoController.getAllStates
+);
 
 // router.get('/states/geoid/:geoid',
 //   geoController.getByGeoId
