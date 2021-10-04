@@ -20,6 +20,10 @@ const countySchema = new mongoose.Schema(
       'type': String,
       'required': true
     },
+    'usps': {
+      'type': String,
+      'required': true
+    },
     'feature': mongoose.Schema.Types.Feature
   });
 

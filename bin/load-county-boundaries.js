@@ -37,6 +37,8 @@ async function load() {
         // eslint-disable-next-line security/detect-object-injection
         'fips': counties.features[i].properties.GEOID,
         // eslint-disable-next-line security/detect-object-injection
+        'usps': counties.features[i].properties.STUSPS,
+        // eslint-disable-next-line security/detect-object-injection
         'feature': counties.features[i]
       });
     }
