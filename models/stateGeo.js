@@ -16,9 +16,17 @@ const stateSchema = new mongoose.Schema(
       'type': String,
       'required': true
     },
+    'geoid': {
+      'type': String,
+      'required': true,
+      'minLength': 2,
+      'maxLength': 2
+    },
     'usps': {
       'type': String,
-      'required': true
+      'required': true,
+      'minLength': 2,
+      'maxLength': 2
     },
     'feature': mongoose.Schema.Types.Feature
   });
