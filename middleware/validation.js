@@ -62,6 +62,17 @@ exports.validateCode = [
     .withMessage('`code` should be a number between 1 and 67, inclusive.')
 ];
 
+exports.validateGeoId = [
+  check('geoid')
+    .notEmpty()
+    .escape()
+    .stripLow(true)
+    .trim()
+    .isNumeric()
+    .isLength({'min': '2', 'max': '2'})
+    .withMessage('`geoid` should be a two-digit GEOID number.')
+];
+
 exports.validateUSPS = [
   check('usps')
     .notEmpty()
