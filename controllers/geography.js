@@ -79,6 +79,32 @@ async function getAllStates(request, response) {
 
 exports.getAllStates = getAllStates;
 
+async function getStateByUsps(request, response) {
+  logger.debug('request:  GET /api/v1/geography/states/usps/:usps');
+
+  try {
+    const state = await State()
+      .findOne(
+        {'usps': request.params.usps.toUpperCase()},
+        {'_id': false, '__v': false}
+      ).exec();
+    return response
+      .status(200)
+      .json({
+        'type': 'FeatureCollection',
+        'features' : [state.feature]
+      });
+  } catch {
+    return response
+      .status(500)
+      .json({
+        'error': 'server error'
+      });
+  }
+}
+
+exports.getStateByUsps = getStateByUsps;
+
 async function getAllCountiesForStateByUSPS(request, response) {
   logger.debug('request:  GET /api/v1/geography/counties/state/usps/:usps/all');
 

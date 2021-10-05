@@ -29,9 +29,11 @@ router.get('/states/all',
 //   geoController.getByName
 // );
 
-// router.get('/states/usps/:usps',
-//   geoController.getByUsps
-// );
+router.get('/states/usps/:usps',
+  validation.validateUSPS,
+  validation.validationErrorReporterJSON,
+  geoController.getStateByUsps
+);
 
 router.get('/counties/state/usps/:usps/all',
   validation.validateUSPS,
