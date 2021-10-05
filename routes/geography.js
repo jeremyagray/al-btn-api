@@ -21,9 +21,10 @@ router.get('/states/all',
   geoController.getAllStates
 );
 
-// router.get('/states/geoid/:geoid',
-//   geoController.getByGeoId
-// );
+router.get('/states/geoid/:geoid',
+  validation.validateGeoId,
+  geoController.getStateByGeoId
+);
 
 // router.get('/states/name/:name',
 //   geoController.getByName

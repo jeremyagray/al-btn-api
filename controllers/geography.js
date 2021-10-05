@@ -105,6 +105,32 @@ async function getStateByUsps(request, response) {
 
 exports.getStateByUsps = getStateByUsps;
 
+async function getStateByGeoId(request, response) {
+  logger.debug('request:  GET /api/v1/geography/states/geoid/:geoid');
+
+  try {
+    const state = await State()
+      .findOne(
+        {'geoid': request.params.geoid},
+        {'_id': false, '__v': false}
+      ).exec();
+    return response
+      .status(200)
+      .json({
+        'type': 'FeatureCollection',
+        'features' : [state.feature]
+      });
+  } catch {
+    return response
+      .status(500)
+      .json({
+        'error': 'server error'
+      });
+  }
+}
+
+exports.getStateByGeoId = getStateByGeoId;
+
 async function getAllCountiesForStateByUSPS(request, response) {
   logger.debug('request:  GET /api/v1/geography/counties/state/usps/:usps/all');
 
