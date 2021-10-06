@@ -21,14 +21,14 @@ router.get('/states/all',
   geoController.getAllStates
 );
 
+router.get('/states/all/info',
+  geoController.getAllStatesInfo
+);
+
 router.get('/states/geoid/:geoid',
   validation.validateGeoId,
   geoController.getStateByGeoId
 );
-
-// router.get('/states/name/:name',
-//   geoController.getByName
-// );
 
 router.get('/states/usps/:usps',
   validation.validateUSPS,

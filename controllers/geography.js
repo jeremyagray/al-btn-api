@@ -79,6 +79,27 @@ async function getAllStates(request, response) {
 
 exports.getAllStates = getAllStates;
 
+exports.getAllStatesInfo = async (request, response) => {
+  logger.debug('request:  GET /api/v1/geography/states/all/info');
+
+  try {
+    const states = await State()
+      .find({}, {'_id': false, '__v': false, 'feature': false})
+      .sort({'geoid': 1})
+      .exec();
+
+    return response
+      .status(200)
+      .json(states);
+  } catch {
+    return response
+      .status(500)
+      .json({
+        'error': 'server error'
+      });
+  }
+};
+
 async function getStateByUsps(request, response) {
   logger.debug('request:  GET /api/v1/geography/states/usps/:usps');
 
