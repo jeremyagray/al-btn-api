@@ -16,9 +16,10 @@ async function load() {
   // Configure mongoose.
   const MONGO_URI = 'mongodb://localhost:27017/albtn';
   const MONGOOSE_OPTIONS = {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false
+    'useCreateIndex': true,
+    'useNewUrlParser': true,
+    'useUnifiedTopology': true,
+    'useFindAndModify': false
   };
 
   try {
@@ -41,7 +42,7 @@ async function load() {
         // eslint-disable-next-line security/detect-object-injection
         'usps': states.features[i].properties.STUSPS,
         // eslint-disable-next-line security/detect-object-injection
-        'feature': states.features[i]
+        'geometry': states.features[i].geometry
       });
     }
   } catch (error) {

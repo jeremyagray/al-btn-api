@@ -28,8 +28,10 @@ const stateSchema = new mongoose.Schema(
       'minLength': 2,
       'maxLength': 2
     },
-    'feature': mongoose.Schema.Types.Feature
+    'geometry': mongoose.Schema.Types.Geometry
   });
+
+stateSchema.index({'geometry': '2dsphere'});
 
 function stateModel() {
   return mongoose.model('StateBoundary', stateSchema);

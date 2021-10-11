@@ -55,14 +55,29 @@ async function getAllStates(request, response) {
     const states = await State()
       .find({}, {'_id': false, '__v': false})
       .exec();
+
     let statesCollection = {
       'type': 'FeatureCollection',
+      'crs': {
+        'type': 'name',
+        'properties': {
+          'name': 'urn:ogc:def:crs:EPSG::4269'
+        }
+      },
       'features' : []
     };
 
     for (let i = 0; i < states.length; i++) {
       // eslint-disable-next-line security/detect-object-injection
-      statesCollection.features.push(states[i].feature);
+      statesCollection.features.push({
+        'type': 'Feature',
+        'properties': {
+          'geoid': states[i].geoid,
+          'name': states[i].name,
+          'usps': states[i].usps
+        },
+        'geometry': states[i].geometry
+      });
     }
 
     return response
@@ -84,7 +99,7 @@ exports.getAllStatesInfo = async (request, response) => {
 
   try {
     const states = await State()
-      .find({}, {'_id': false, '__v': false, 'feature': false})
+      .find({}, {'_id': false, '__v': false, 'geometry': false})
       .sort({'geoid': 1})
       .exec();
 
@@ -113,8 +128,21 @@ async function getStateByUsps(request, response) {
       .status(200)
       .json({
         'type': 'FeatureCollection',
-        'features' : [state.feature]
-      });
+        'crs': {
+          'type': 'name',
+          'properties': {
+            'name': 'urn:ogc:def:crs:EPSG::4269'
+          }
+        },
+        'features' : [{
+          'type': 'Feature',
+          'properties': {
+            'geoid': state.geoid,
+            'name': state.name,
+            'usps': state.usps
+          },
+          'geometry': state.geometry
+        }]});
   } catch {
     return response
       .status(500)
@@ -139,8 +167,21 @@ async function getStateByGeoId(request, response) {
       .status(200)
       .json({
         'type': 'FeatureCollection',
-        'features' : [state.feature]
-      });
+        'crs': {
+          'type': 'name',
+          'properties': {
+            'name': 'urn:ogc:def:crs:EPSG::4269'
+          }
+        },
+        'features' : [{
+          'type': 'Feature',
+          'properties': {
+            'geoid': state.geoid,
+            'name': state.name,
+            'usps': state.usps
+          },
+          'geometry': state.geometry
+        }]});
   } catch {
     return response
       .status(500)
