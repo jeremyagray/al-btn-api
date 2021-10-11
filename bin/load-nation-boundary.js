@@ -12,7 +12,7 @@ const mongoose = require('mongoose');
 const Nation = require('../models/nationGeo.js');
 
 // The processed county data.
-const nation = require('../public/data/census/us-geo.json');
+const nation = require('../public/data/census/nation-geo.json');
 
 async function load() {
   // Configure mongoose.
