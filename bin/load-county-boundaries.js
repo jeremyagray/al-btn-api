@@ -7,12 +7,10 @@
 'use strict';
 
 const mongoose = require('mongoose');
+const fs = require('fs');
 
 // Use the API County model.
 const County = require('../models/countyGeo.js');
-
-// The processed county data.
-const counties = require('../public/data/census/county-geo.json');
 
 async function load() {
   // Configure mongoose.
@@ -26,6 +24,10 @@ async function load() {
   try {
     // Initialize mongoose connection.
     await mongoose.connect(MONGO_URI, MONGOOSE_OPTIONS);
+
+    // The processed counties data.
+    const countiesString = await fs.promises.readFile(process.argv[2], 'utf8');
+    const counties = JSON.parse(countiesString);
 
     // Batch update county documents.
     const countyModel = County();

@@ -7,12 +7,10 @@
 'use strict';
 
 const mongoose = require('mongoose');
+const fs = require('fs');
 
 // Use the API State model.
 const State = require('../models/stateGeo.js');
-
-// The processed county data.
-const states = require('../public/data/census/state-geo.json');
 
 async function load() {
   // Configure mongoose.
@@ -26,6 +24,10 @@ async function load() {
   try {
     // Initialize mongoose connection.
     await mongoose.connect(MONGO_URI, MONGOOSE_OPTIONS);
+
+    // The processed states data.
+    const statesString = await fs.promises.readFile(process.argv[2], 'utf8');
+    const states = JSON.parse(statesString);
 
     // Batch update county documents.
     const stateModel = State();

@@ -7,12 +7,10 @@
 'use strict';
 
 const mongoose = require('mongoose');
+const fs = require('fs');
 
 // Use the API Nation model.
 const Nation = require('../models/nationGeo.js');
-
-// The processed county data.
-const nation = require('../public/data/census/nation-geo.json');
 
 async function load() {
   // Configure mongoose.
@@ -26,6 +24,10 @@ async function load() {
   try {
     // Initialize mongoose connection.
     await mongoose.connect(MONGO_URI, MONGOOSE_OPTIONS);
+
+    // The processed nation data.
+    const nationString = await fs.promises.readFile(process.argv[2], 'utf8');
+    const nation = JSON.parse(nationString);
 
     // Batch update county documents.
     const nationModel = Nation();
