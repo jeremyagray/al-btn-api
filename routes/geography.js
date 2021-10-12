@@ -21,12 +21,20 @@ router.get('/states/all',
   geoController.getAllStates
 );
 
+router.get('/states/around/:usps/distance/:distance',
+  validation.validateUSPS,
+  validation.validateDistance,
+  validation.validationErrorReporterJSON,
+  geoController.getStatesAround
+);
+
 router.get('/states/all/info',
   geoController.getAllStatesInfo
 );
 
 router.get('/states/geoid/:geoid',
   validation.validateGeoId,
+  validation.validationErrorReporterJSON,
   geoController.getStateByGeoId
 );
 

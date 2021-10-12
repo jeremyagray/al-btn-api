@@ -83,3 +83,13 @@ exports.validateUSPS = [
     .isLength({'min': '2', 'max': '2'})
     .withMessage('`usps` should be a two-letter USPS state abbreviation.')
 ];
+
+exports.validateDistance = [
+  check('distance')
+    .notEmpty()
+    .escape()
+    .stripLow(true)
+    .trim()
+    .isFloat({'min': '0', 'max': '15000000'})
+    .withMessage('`distance` should be a number, in meters.')
+];

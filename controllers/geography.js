@@ -68,14 +68,17 @@ async function getAllStates(request, response) {
     };
 
     for (let i = 0; i < states.length; i++) {
-      // eslint-disable-next-line security/detect-object-injection
       statesCollection.features.push({
         'type': 'Feature',
         'properties': {
+          // eslint-disable-next-line security/detect-object-injection
           'geoid': states[i].geoid,
+          // eslint-disable-next-line security/detect-object-injection
           'name': states[i].name,
+          // eslint-disable-next-line security/detect-object-injection
           'usps': states[i].usps
         },
+        // eslint-disable-next-line security/detect-object-injection
         'geometry': states[i].geometry
       });
     }
@@ -93,6 +96,73 @@ async function getAllStates(request, response) {
 }
 
 exports.getAllStates = getAllStates;
+
+const getStatesAround = async (request, response) => {
+  // Rudimentary version, which ignores requested state code.
+  //
+  // Uses Alabama and its geo center.
+  //
+  // Needs to compute the requested state's geo center.
+  logger.debug(`request:  GET /api/v1/geography/states/around/${request.params.usps}/distance/${request.params.distance}`);
+
+  try {
+    const states = await State()
+      .find({
+        'geometry': {
+          '$near': {
+            '$geometry': {
+              'type': 'Point',
+              'coordinates': [-86.6472, 32.8347]
+            },
+            '$maxDistance': request.params.distance
+          }}},
+      {
+        'geometry': false
+      })
+      .exec();
+
+    let statesCollection = {
+      'type': 'FeatureCollection',
+      'crs': {
+        'type': 'name',
+        'properties': {
+          'name': 'urn:ogc:def:crs:EPSG::4269'
+        }
+      },
+      'features' : []
+    };
+
+    for (let i = 0; i < states.length; i++) {
+      // eslint-disable-next-line security/detect-object-injection
+      statesCollection.features.push({
+        'type': 'Feature',
+        'properties': {
+          // eslint-disable-next-line security/detect-object-injection
+          'geoid': states[i].geoid,
+          // eslint-disable-next-line security/detect-object-injection
+          'name': states[i].name,
+          // eslint-disable-next-line security/detect-object-injection
+          'usps': states[i].usps
+        },
+        // eslint-disable-next-line security/detect-object-injection
+        'geometry': states[i].geometry
+      });
+    }
+
+    return response
+      .status(200)
+      .json(statesCollection);
+  } catch (error) {
+    console.log(error);
+    return response
+      .status(500)
+      .json({
+        'error': 'server error'
+      });
+  }
+};
+
+exports.getStatesAround = getStatesAround;
 
 exports.getAllStatesInfo = async (request, response) => {
   logger.debug('request:  GET /api/v1/geography/states/all/info');
