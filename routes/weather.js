@@ -9,8 +9,6 @@
 const express = require('express');
 const router = express.Router();
 
-const validation = require('../middleware/validation.js');
-
 const weatherController = require('../controllers/weather.js');
 
 router.get('/nws/alert/colors/all',

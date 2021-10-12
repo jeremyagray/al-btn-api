@@ -26,6 +26,7 @@ async function load() {
     await mongoose.connect(MONGO_URI, MONGOOSE_OPTIONS);
 
     // The processed nation data.
+    // eslint-disable-next-line security/detect-non-literal-fs-filename
     const nationString = await fs.promises.readFile(process.argv[2], 'utf8');
     const nation = JSON.parse(nationString);
 
