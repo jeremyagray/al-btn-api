@@ -331,6 +331,32 @@ async function getStateByGeoId(request, response) {
 
 exports.getStateByGeoId = getStateByGeoId;
 
+const getStateCentroidByUsps = async (request, response) => {
+  logger.debug(`request:  GET /api/v1/geography/states/centroid/usps/${request.params.usps}`);
+
+  try {
+    const state = await State()
+      .findOne(
+        {'usps': request.params.usps.toUpperCase()},
+        {'_id': false, '__v': false, 'name': false, 'geoid': false, 'usps': false, 'geometry': false}
+      ).exec();
+
+    console.log(state);
+    return response
+      .status(200)
+      .json(state.centroid);
+  } catch (error) {
+    console.log(error);
+    return response
+      .status(500)
+      .json({
+        'error': 'server error'
+      });
+  }
+};
+
+exports.getStateCentroidByUsps = getStateCentroidByUsps;
+
 async function getAllCountiesForStateByUSPS(request, response) {
   logger.debug('request:  GET /api/v1/geography/counties/state/usps/:usps/all');
 

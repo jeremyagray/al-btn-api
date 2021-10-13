@@ -51,6 +51,12 @@ router.get('/states/usps/:usps',
   geoController.getStateByUsps
 );
 
+router.get('/states/centroid/usps/:usps',
+  validation.validateUSPS,
+  validation.validationErrorReporterJSON,
+  geoController.getStateCentroidByUsps
+);
+
 router.get('/counties/state/usps/:usps/all',
   validation.validateUSPS,
   validation.validationErrorReporterJSON,
