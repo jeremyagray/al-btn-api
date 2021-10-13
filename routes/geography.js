@@ -28,6 +28,13 @@ router.get('/states/around/:usps/distance/:distance',
   geoController.getStatesAround
 );
 
+router.get('/states/within/:usps/distance/:distance',
+  validation.validateUSPS,
+  validation.validateDistance,
+  validation.validationErrorReporterJSON,
+  geoController.getStatesWithin
+);
+
 router.get('/states/all/info',
   geoController.getAllStatesInfo
 );

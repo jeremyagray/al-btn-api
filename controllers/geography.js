@@ -121,9 +121,7 @@ const getStatesAround = async (request, response) => {
           }
         ]
       },
-      {
-        'geometry': false
-      })
+      { '_id': false, '__v': false })
       .exec();
 
     let statesCollection = {
@@ -168,6 +166,71 @@ const getStatesAround = async (request, response) => {
 };
 
 exports.getStatesAround = getStatesAround;
+
+const getStatesWithin = async (request, response) => {
+  logger.debug(`request:  GET /api/v1/geography/states/within/${request.params.usps}/distance/${request.params.distance}`);
+
+  try {
+    const state = await State()
+      .findOne(
+        {'usps': request.params.usps.toUpperCase()},
+        {'_id': false, '__v': false, 'name': false, 'geoid': false, 'usps': false, 'geometry': false}
+      ).exec();
+
+    const states = await State()
+      .find({
+        'geometry': {
+          '$near': {
+            '$geometry': state.centroid,
+            '$maxDistance': request.params.distance
+          }
+        }
+      },
+      { '_id': false, '__v': false })
+      .exec();
+
+    let statesCollection = {
+      'type': 'FeatureCollection',
+      'crs': {
+        'type': 'name',
+        'properties': {
+          'name': 'urn:ogc:def:crs:EPSG::4269'
+        }
+      },
+      'features' : []
+    };
+
+    for (let i = 0; i < states.length; i++) {
+      // eslint-disable-next-line security/detect-object-injection
+      statesCollection.features.push({
+        'type': 'Feature',
+        'properties': {
+          // eslint-disable-next-line security/detect-object-injection
+          'geoid': states[i].geoid,
+          // eslint-disable-next-line security/detect-object-injection
+          'name': states[i].name,
+          // eslint-disable-next-line security/detect-object-injection
+          'usps': states[i].usps
+        },
+        // eslint-disable-next-line security/detect-object-injection
+        'geometry': states[i].geometry
+      });
+    }
+
+    return response
+      .status(200)
+      .json(statesCollection);
+  } catch (error) {
+    console.log(error);
+    return response
+      .status(500)
+      .json({
+        'error': 'server error'
+      });
+  }
+};
+
+exports.getStatesWithin = getStatesWithin;
 
 exports.getAllStatesInfo = async (request, response) => {
   logger.debug('request:  GET /api/v1/geography/states/all/info');
