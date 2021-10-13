@@ -98,24 +98,29 @@ async function getAllStates(request, response) {
 exports.getAllStates = getAllStates;
 
 const getStatesAround = async (request, response) => {
-  // Rudimentary version, which ignores requested state code.
-  //
-  // Uses Alabama and its geo center.
-  //
-  // Needs to compute the requested state's geo center.
   logger.debug(`request:  GET /api/v1/geography/states/around/${request.params.usps}/distance/${request.params.distance}`);
 
   try {
+    const state = await State()
+      .findOne(
+        {'usps': request.params.usps.toUpperCase()},
+        {'_id': false, '__v': false, 'name': false, 'geoid': false, 'usps': false, 'geometry': false}
+      ).exec();
+
     const states = await State()
       .find({
-        'geometry': {
-          '$near': {
-            '$geometry': {
-              'type': 'Point',
-              'coordinates': [-86.6472, 32.8347]
-            },
-            '$maxDistance': request.params.distance
-          }}},
+        '$and': [
+          { 'usps': {'$ne': request.params.usps.toUpperCase()}},
+          {
+            'geometry': {
+              '$near': {
+                '$geometry': state.centroid,
+                '$maxDistance': request.params.distance
+              }
+            }
+          }
+        ]
+      },
       {
         'geometry': false
       })
