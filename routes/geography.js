@@ -26,14 +26,14 @@ router.get('/states/adjacent/usps/:usps',
   geoController.getStatesAdjacentByUsps
 );
 
-router.get('/states/around/:usps/distance/:distance',
+router.get('/states/around/usps/:usps/distance/:distance',
   validation.validateUSPS,
   validation.validateDistance,
   validation.validationErrorReporterJSON,
   geoController.getStatesAround
 );
 
-router.get('/states/within/:usps/distance/:distance',
+router.get('/states/within/usps/:usps/distance/:distance',
   validation.validateUSPS,
   validation.validateDistance,
   validation.validationErrorReporterJSON,
