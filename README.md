@@ -26,11 +26,19 @@
           - `/info`
 	- `/geoid/:geoid`
 	- `/usps/:usps`
+      - `/adjacent`
+	- `/usps/:usps`
+      - `/around`
+	- `/usps/:usps`
+          - `/distance/:distance`
       - `/counties`
 	- `/fips/:fips`
 	- `/state/geoid/:geoid/all`
 	- `/state/state/:state/all`
 	- `/state/usps/:usps/all`
+      - `/within`
+	- `/usps/:usps`
+          - `/distance/:distance`
     - `/counties`
       - `/all`
       - `/fips/:fips`
