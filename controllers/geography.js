@@ -97,6 +97,30 @@ async function getAllStates(request, response) {
 
 exports.getAllStates = getAllStates;
 
+async function getStatesAdjacentByUsps(request, response) {
+  logger.debug(`request:  GET /api/v1/geography/states/adjacent/usps/${request.params.usps}`);
+
+  try {
+    const state = await State()
+      .findOne(
+        {'usps': request.params.usps.toUpperCase()},
+        {'neighbors': true}
+      ).exec();
+
+    return response
+      .status(200)
+      .json(state.neighbors);
+  } catch {
+    return response
+      .status(500)
+      .json({
+        'error': 'server error'
+      });
+  }
+}
+
+exports.getStatesAdjacentByUsps = getStatesAdjacentByUsps;
+
 const getStatesAround = async (request, response) => {
   logger.debug(`request:  GET /api/v1/geography/states/around/${request.params.usps}/distance/${request.params.distance}`);
 

@@ -21,6 +21,11 @@ router.get('/states/all',
   geoController.getAllStates
 );
 
+router.get('/states/adjacent/usps/:usps',
+  validation.validateUSPS,
+  geoController.getStatesAdjacentByUsps
+);
+
 router.get('/states/around/:usps/distance/:distance',
   validation.validateUSPS,
   validation.validateDistance,
