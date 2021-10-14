@@ -29,7 +29,8 @@ const stateSchema = new mongoose.Schema(
       'maxLength': 2
     },
     'geometry': mongoose.Schema.Types.Geometry,
-    'centroid': mongoose.Schema.Types.Point
+    'centroid': mongoose.Schema.Types.Point,
+    'neighbors': [String]
   });
 
 stateSchema.index({'geometry': '2dsphere'});
