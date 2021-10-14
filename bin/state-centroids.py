@@ -10,8 +10,10 @@
 #
 # ******************************************************************************
 
+import argparse
 import json
 import requests
+import sys
 from bs4 import BeautifulSoup as bs
 from pymongo import MongoClient
 
@@ -21,7 +23,20 @@ def update_state_centroids(data):
     c = MongoClient("mongodb://localhost:27017/")
     db = c["albtn"]
     coll = db["stateboundaries"]
-    pass
+
+    for doc in data["features"]:
+        coll.update_one(
+            {
+                "name": doc["properties"]["state"]
+            },
+            {
+                "$set": {
+                    "centroid": doc["geometry"]
+                }
+            },
+        )
+
+    return
 
 
 def get_state_centroids():
@@ -77,6 +92,8 @@ def get_state_centroids():
                             "type": "Feature",
                             "properties": {
                                 "state": cells[0].text.strip(),
+                                "geoid": "",
+                                "usps": "",
                             },
                             "geometry": {
                                 "type": "Point",
