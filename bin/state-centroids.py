@@ -16,6 +16,8 @@ import json
 import requests
 from bs4 import BeautifulSoup as bs
 from pymongo import MongoClient
+from thefuzz import process
+from thefuzz import fuzz
 
 
 def update_state_centroids(
@@ -28,9 +30,23 @@ def update_state_centroids(
     db = c[dbname]
     coll = db["stateboundaries"]
 
+    states = coll.find(
+        {},
+        ["name"],
+    )
+
+    state_names = []
+    for state in states:
+        state_names.append(state["name"])
+
     for doc in data["features"]:
+        state = process.extractOne(
+            doc["properties"]["state"],
+            state_names,
+            scorer=fuzz.token_set_ratio,
+        )[0]
         coll.update_one(
-            {"name": doc["properties"]["state"]},
+            {"name": state},
             {"$set": {"centroid": doc["geometry"]}},
         )
 
