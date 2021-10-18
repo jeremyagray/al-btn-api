@@ -74,13 +74,29 @@ const getRadarsAll = async (request, response) => {
 
   try {
     const radars = await Radar()
-      .find({}, {'station': true, '_id': false})
+      .find({}, {'_id': false, '__v': false})
       .exec();
 
-    return response.json({
-      'length': radars.length,
-      'stations': radars
-    });
+    let radarData = [];
+    for (let i = 0; i < radars.length; i++) {
+      radarData.push({
+        'type': 'Feature',
+        'properties': {
+          'wban': radars[i].wban,
+          'station': radars[i].station,
+          'radarType': radars[i].radarType,
+          'location': radars[i].location,
+          'usps': radars[i].usps,
+          'elevation': radars[i].elevation,
+          'towerHeight': radars[i].towerHeight
+        },
+        'geometry': radars[i].geometry
+      });
+    }
+
+    return response
+      .status(200)
+      .json(radarData);
   } catch {
     logger.error('GET /api/v1/weather/colors all failed to return documents');
     return response
