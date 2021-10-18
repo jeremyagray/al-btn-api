@@ -37,13 +37,21 @@ async function load() {
 
     for (let i = 0; i < radars.length; i++) {
       await radarModel.create({
+        // eslint-disable-next-line security/detect-object-injection
         'wban': radars[i].properties.wban,
+        // eslint-disable-next-line security/detect-object-injection
         'station': radars[i].properties.station,
+        // eslint-disable-next-line security/detect-object-injection
         'radarType': radars[i].properties.radarType,
+        // eslint-disable-next-line security/detect-object-injection
         'location': radars[i].properties.location,
+        // eslint-disable-next-line security/detect-object-injection
         'usps': radars[i].properties.usps,
+        // eslint-disable-next-line security/detect-object-injection
         'elevation': radars[i].properties.elevation,
+        // eslint-disable-next-line security/detect-object-injection
         'towerHeight': radars[i].properties.towerHeight,
+        // eslint-disable-next-line security/detect-object-injection
         'geometry': radars[i].geometry
       });
     }

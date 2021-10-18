@@ -82,14 +82,22 @@ const getRadarsAll = async (request, response) => {
       radarData.push({
         'type': 'Feature',
         'properties': {
+          // eslint-disable-next-line security/detect-object-injection
           'wban': radars[i].wban,
+          // eslint-disable-next-line security/detect-object-injection
           'station': radars[i].station,
+          // eslint-disable-next-line security/detect-object-injection
           'radarType': radars[i].radarType,
+          // eslint-disable-next-line security/detect-object-injection
           'location': radars[i].location,
+          // eslint-disable-next-line security/detect-object-injection
           'usps': radars[i].usps,
+          // eslint-disable-next-line security/detect-object-injection
           'elevation': radars[i].elevation,
+          // eslint-disable-next-line security/detect-object-injection
           'towerHeight': radars[i].towerHeight
         },
+        // eslint-disable-next-line security/detect-object-injection
         'geometry': radars[i].geometry
       });
     }
