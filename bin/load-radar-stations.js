@@ -44,7 +44,7 @@ async function load() {
         'usps': radars[i].properties.usps,
         'elevation': radars[i].properties.elevation,
         'towerHeight': radars[i].properties.towerHeight,
-        'geometry': radars[i].properties.geometry
+        'geometry': radars[i].geometry
       });
     }
   } catch (error) {
