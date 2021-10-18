@@ -34,7 +34,6 @@ def process_latitude(cell):
 
 def process_longitude(cell):
     """Return the longitude from a cell."""
-    print(cell)
     long = cell.strip().split("/")[1]
     long = long.strip()
 
@@ -84,26 +83,28 @@ def get_locations():
     rows = table.find_all("tr")
     for row in rows[1:]:
         cells = row.find_all("td")
-        radars.append(
-            {
-                "type": "Feature",
-                "properties": {
-                    "wban": cells[0].text.strip(),
-                    "station_id": cells[1].text.strip().upper(),
-                    "location": cells[2].text.strip().split(',')[0].strip(),
-                    "usps": cells[2].text.strip().split(',')[1].strip(),
-                    "elevation": cells[4].text.strip(),
-                    "height": cells[5].text.strip(),
-                },
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [
-                        process_longitude(cells[3].text),
-                        process_latitude(cells[3].text),
-                    ],
-                },
-            }
-        )
+        if len(cells[2].text.strip().split(',')[1].strip()) == 2:
+            radars.append(
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "wban": cells[0].text.strip(),
+                        "station": cells[1].text.strip().upper(),
+                        "location": cells[2].text.strip().split(',')[0].strip(),
+                        "usps": cells[2].text.strip().split(',')[1].strip().upper(),
+                        "elevation": cells[4].text.strip(),
+                        "towerHeight": cells[5].text.strip(),
+                        "radarType": "wsr88d",
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                            process_longitude(cells[3].text),
+                            process_latitude(cells[3].text),
+                        ],
+                    },
+                }
+            )
 
     return radars
 
