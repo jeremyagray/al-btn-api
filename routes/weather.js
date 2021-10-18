@@ -15,4 +15,8 @@ router.get('/nws/alert/colors/all',
   weatherController.getNwsAlertColors
 );
 
+router.get('/nws/radars/all',
+  weatherController.getRadarsAll
+);
+
 module.exports = router;
