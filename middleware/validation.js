@@ -93,3 +93,14 @@ exports.validateDistance = [
     .isFloat({'min': '0', 'max': '15000000'})
     .withMessage('`distance` should be a number, in meters.')
 ];
+
+exports.validateStation = [
+  check('station')
+    .notEmpty()
+    .escape()
+    .stripLow(true)
+    .trim()
+    .isAlpha()
+    .isLength({'min': '4', 'max': '4'})
+    .withMessage('`station` should be a four-letter radar station ID.')
+];
