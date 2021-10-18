@@ -19,4 +19,8 @@ router.get('/nws/radars/all',
   weatherController.getRadarsAll
 );
 
+router.get('/nws/radars/station/:station',
+  weatherController.getRadarByStation
+);
+
 module.exports = router;

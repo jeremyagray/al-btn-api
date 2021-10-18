@@ -92,3 +92,40 @@ const getRadarsAll = async (request, response) => {
 };
 
 exports.getRadarsAll = getRadarsAll;
+
+const getRadarByStation = async (request, response) => {
+  logger.debug('request:  GET /api/v1/weather/radars/station/${request.params.station}');
+
+  try {
+    const station = await Radar()
+      .findOne(
+        {'station': request.params.station.toUpperCase()},
+        {'_id': false, '__v': false})
+      .exec();
+
+    return response
+      .status(200)
+      .json({
+        'type': 'Feature',
+        'properties': {
+          'wban': station.wban,
+          'station': station.station,
+          'radarType': station.radarType,
+          'location': station.location,
+          'usps': station.usps,
+          'elevation': station.elevation,
+          'towerHeight': station.towerHeight
+        },
+        'geometry': station.geometry
+      });
+  } catch {
+    logger.error(`GET /api/v1/weather/radar/station/${request.params.station} all failed to return documents`);
+    return response
+      .status(500)
+      .json({
+        'error': 'server error'
+      });
+  }
+};
+
+exports.getRadarByStation = getRadarByStation;
