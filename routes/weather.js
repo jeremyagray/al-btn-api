@@ -21,6 +21,11 @@ router.get('/nws/radars/all',
   weatherController.getRadarsAll
 );
 
+router.get('/nws/radars/state/:usps',
+  validation.validateUSPS,
+  weatherController.getRadarsByState
+);
+
 router.get('/nws/radars/within/usps/:usps/distance/:distance',
   validation.validateUSPS,
   validation.validateDistance,
