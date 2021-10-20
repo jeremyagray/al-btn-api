@@ -54,6 +54,7 @@ async function getAllStates(request, response) {
   try {
     const states = await State()
       .find({}, {'_id': false, '__v': false})
+      .sort({'name': 1})
       .exec();
 
     let statesCollection = {
