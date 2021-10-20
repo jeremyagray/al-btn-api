@@ -302,7 +302,8 @@ async function getStateByUsps(request, response) {
           'properties': {
             'geoid': state.geoid,
             'name': state.name,
-            'usps': state.usps
+            'usps': state.usps,
+            'centroid': state.centroid
           },
           'geometry': state.geometry
         }]});
