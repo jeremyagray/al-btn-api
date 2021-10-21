@@ -76,6 +76,7 @@ const getRadarsAll = async (request, response) => {
   try {
     const radars = await Radar()
       .find({}, {'_id': false, '__v': false})
+      .sort({'station': 1})
       .exec();
 
     let radarData = [];
