@@ -25,6 +25,7 @@ const helmet = require('./middleware/helmet.js');
 const logger = require('./middleware/logger.js');
 
 // Routing.
+const contactRoute = require('./routes/contact.js');
 const countyRoute = require('./routes/county.js');
 const geographyRoute = require('./routes/geography.js');
 const weatherRoute = require('./routes/weather.js');
@@ -110,6 +111,7 @@ async function start() {
     //   });
 
     // Application routes.
+    app.use('/api/v1/contact', contactRoute);
     app.use('/api/v1/counties', countyRoute);
     app.use('/api/v1/geography', geographyRoute);
     app.use('/api/v1/weather', weatherRoute);

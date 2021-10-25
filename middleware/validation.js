@@ -31,10 +31,10 @@ exports.validationErrorReporterJSON = function(request, response, next) {
 
   // Bail on errors.
   if (! errors.isEmpty()) {
-    logger.debug('validation failed');
+    logger.debug('input validation failed');
     return response
       .status(400)
-      .json({'error': 'invalid URL'});
+      .json({'error': 'input validation failed'});
   }
 
   // Continue if no errors.
@@ -103,4 +103,43 @@ exports.validateStation = [
     .isAlpha()
     .isLength({'min': '4', 'max': '4'})
     .withMessage('`station` should be a four-letter radar station ID.')
+];
+
+exports.validateContactName = [
+  check('contactName')
+    .notEmpty()
+    .escape()
+    .stripLow(true)
+    .trim()
+    .withMessage('`contactName` should be a non-empty string.')
+];
+
+exports.validateContactEmail = [
+  check('contactEmail')
+    .notEmpty()
+    .escape()
+    .stripLow(true)
+    .trim()
+    .isEmail()
+    .withMessage('`contactEmail` should be a non-empty email address.')
+    .normalizeEmail()
+];
+
+exports.validateContactMessage = [
+  check('contactMessage')
+    .notEmpty()
+    .escape()
+    .stripLow(true)
+    .trim()
+    .withMessage('`contactMessage` should be a non-empty string.')
+];
+
+exports.validateContactSpam = [
+  check('contactSpam')
+    .notEmpty()
+    .escape()
+    .stripLow(true)
+    .trim()
+    .isBoolean()
+    .withMessage('`contactMessage` should be a boolean.')
 ];
