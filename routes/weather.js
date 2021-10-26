@@ -32,6 +32,11 @@ router.get('/nws/radars/within/usps/:usps/distance/:distance',
   weatherController.getRadarStationsWithin
 );
 
+router.get('/nws/radars/bbox',
+  validation.validationErrorReporterJSON,
+  weatherController.getRadarStationsBBox
+);
+
 router.get('/nws/radars/station/:station',
   validation.validateUSPS,
   weatherController.getRadarByStation

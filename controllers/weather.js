@@ -242,6 +242,83 @@ const getRadarStationsWithin = async (request, response) => {
 
 exports.getRadarStationsWithin = getRadarStationsWithin;
 
+const getRadarStationsBBox = async (request, response) => {
+  logger.debug(`request:  GET /api/v1/weather/radars/bbox?westLon=${request.query.westLon}&eastLon=${request.query.eastLon}&southLat=${request.query.southLat}&northLat=${request.query.northLat}`);
+
+  try {
+    const radars = await Radar()
+      .find({
+        'geometry': {
+          '$geoWithin': {
+            '$geometry': {
+              'type': 'Polygon',
+              'coordinates': [
+                [
+                  [ request.query.westLon, request.query.northLat ],
+                  [ request.query.eastLon, request.query.northLat ],
+                  [ request.query.eastLon, request.query.southLat ],
+                  [ request.query.westLon, request.query.southLat ],
+                  [ request.query.westLon, request.query.northLat ]
+                ]
+              ]
+            }
+          }
+        }
+      },
+      { '_id': false, '__v': false })
+      .exec();
+
+    let radarCollection = {
+      'type': 'FeatureCollection',
+      'crs': {
+        'type': 'NEXRAD Weather Stations',
+        'properties': {
+          'name': 'urn:ogc:def:crs:EPSG::4269'
+        }
+      },
+      'features' : []
+    };
+
+    for (let i = 0; i < radars.length; i++) {
+      radarCollection.features.push({
+        'type': 'Feature',
+        'properties': {
+          // eslint-disable-next-line security/detect-object-injection
+          'wban': radars[i].wban,
+          // eslint-disable-next-line security/detect-object-injection
+          'station': radars[i].station,
+          // eslint-disable-next-line security/detect-object-injection
+          'radarType': radars[i].radarType,
+          // eslint-disable-next-line security/detect-object-injection
+          'location': radars[i].location,
+          // eslint-disable-next-line security/detect-object-injection
+          'usps': radars[i].usps,
+          // eslint-disable-next-line security/detect-object-injection
+          'elevation': radars[i].elevation,
+          // eslint-disable-next-line security/detect-object-injection
+          'towerHeight': radars[i].towerHeight
+        },
+        // eslint-disable-next-line security/detect-object-injection
+        'geometry': radars[i].geometry
+      });
+    }
+
+    return response
+      .status(200)
+      .json(radarCollection);
+  } catch (error) {
+    logger.debug(`GET /api/v1/weather/radars/bbox?westLon=${request.query.westLon}&eastLon=${request.query.eastLon}&southLat=${request.query.southLat}&northLat=${request.query.northLat} request failed`);
+    logger.debug(error.message);
+    return response
+      .status(500)
+      .json({
+        'error': 'server error'
+      });
+  }
+};
+
+exports.getRadarStationsBBox = getRadarStationsBBox;
+
 const getRadarByStation = async (request, response) => {
   logger.debug('request:  GET /api/v1/weather/radars/station/${request.params.station}');
 

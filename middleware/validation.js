@@ -10,24 +10,32 @@ const {check, validationResult} = require('express-validator');
 
 const logger = require('../middleware/logger.js');
 
+// Reusable validation functions.
+
+const checkLatitude = (queryStr) => {
+  return check(queryStr)
+    .notEmpty()
+    .escape()
+    .stripLow(true)
+    .trim()
+    .isNumeric()
+    .withMessage(`\`${queryStr}\` should be a latitude between -90 and 90, inclusive.`);
+};
+
+const checkLongitude = (queryStr) => {
+  return check(queryStr)
+    .notEmpty()
+    .escape()
+    .stripLow(true)
+    .trim()
+    .isNumeric()
+    .withMessage(`\`${queryStr}\` should be a longitude between -180 and 180, inclusive.`);
+};
+
 // Validation error handlers.  Reuse everywhere.
 exports.validationErrorReporterJSON = function(request, response, next) {
   // Grab errors.
   const errors = validationResult(request);
-
-  // Check for FIPS errors.
-  if (request.params.fips) {
-    logger.debug(`validation FIPS:  ${request.params.fips}`);
-  } else {
-    logger.debug('validation FIPS:  no FIPS in request');
-  }
-
-  // Check for code errors.
-  if (request.params.code) {
-    logger.debug(`validation code:  ${request.params.code}`);
-  } else {
-    logger.debug('validation code:  no code in request');
-  }
 
   // Bail on errors.
   if (! errors.isEmpty()) {
@@ -142,4 +150,20 @@ exports.validateContactSpam = [
     .trim()
     .isBoolean()
     .withMessage('`contactMessage` should be a boolean.')
+];
+
+exports.validateWestLong = [
+  checkLongitude('westLon')
+];
+
+exports.validateEastLong = [
+  checkLongitude('eastLon')
+];
+
+exports.validateNorthLat = [
+  checkLatitude('northLat')
+];
+
+exports.validateSouthLat = [
+  checkLatitude('southLat')
 ];
