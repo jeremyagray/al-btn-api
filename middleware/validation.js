@@ -12,6 +12,26 @@ const logger = require('../middleware/logger.js');
 
 // Reusable validation functions.
 
+const checkEmail = (str) => {
+  return check(str)
+    .notEmpty()
+    .escape()
+    .stripLow(true)
+    .trim()
+    .isEmail()
+    .withMessage(`\`${str}\` should be a non-empty email address.`)
+    .normalizeEmail();
+};
+
+const checkString = (str) => {
+  return check(str)
+    .escape()
+    .stripLow(true)
+    .trim()
+    .notEmpty()
+    .withMessage(`\`${str}\` should be a non-empty string.`);
+};
+
 const checkLatitude = (queryStr) => {
   return check(queryStr)
     .notEmpty()
@@ -114,32 +134,15 @@ exports.validateStation = [
 ];
 
 exports.validateContactName = [
-  check('contactName')
-    .notEmpty()
-    .escape()
-    .stripLow(true)
-    .trim()
-    .withMessage('`contactName` should be a non-empty string.')
+  checkString('contactName')
 ];
 
 exports.validateContactEmail = [
-  check('contactEmail')
-    .notEmpty()
-    .escape()
-    .stripLow(true)
-    .trim()
-    .isEmail()
-    .withMessage('`contactEmail` should be a non-empty email address.')
-    .normalizeEmail()
+  checkEmail('contactEmail')
 ];
 
 exports.validateContactMessage = [
-  check('contactMessage')
-    .notEmpty()
-    .escape()
-    .stripLow(true)
-    .trim()
-    .withMessage('`contactMessage` should be a non-empty string.')
+  checkString('contactMessage')
 ];
 
 exports.validateContactSpam = [
@@ -149,7 +152,7 @@ exports.validateContactSpam = [
     .stripLow(true)
     .trim()
     .isBoolean()
-    .withMessage('`contactMessage` should be a boolean.')
+    .withMessage('`contactSpam` should be a boolean.')
 ];
 
 exports.validateWestLong = [
