@@ -170,3 +170,23 @@ exports.validateNorthLat = [
 exports.validateSouthLat = [
   checkLatitude('southLat')
 ];
+
+exports.validateEmail = [
+  checkEmail('email')
+];
+
+exports.validatePassword = [
+  checkString('password')
+];
+
+exports.validatePasswordToo = [
+  checkString('passwordToo')
+];
+
+exports.validateFirstName = [
+  checkString('firstName')
+];
+
+exports.validateLastName = [
+  checkString('lastName')
+];
