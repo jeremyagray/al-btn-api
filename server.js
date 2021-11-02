@@ -134,6 +134,7 @@ async function start() {
     app.use('/api/v1/counties', countyRoute);
     app.use('/api/v1/geography', geographyRoute);
     app.use('/api/v1/weather', weatherRoute);
+    app.use('/api/v1/users', userRoute);
     
     // 404 middleware.
     app.use((request, response) => {
