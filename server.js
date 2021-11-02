@@ -12,9 +12,12 @@ require('dotenv').config();
 const cors = require('cors');
 const express = require('express');
 const favicon = require('serve-favicon');
+const MongoStore = require('connect-mongo');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
+const passport = require('passport');
 const path = require('path');
+const session = require('express-session');
 const winston = require('winston');
 
 // Test runner.
@@ -109,6 +112,22 @@ async function start() {
     //   .get(function(request, response) {
     //     return response.render('index');
     //   });
+
+    // Passport/session support.
+    app.use(session({
+      'resave': false,
+      'saveUninitialized': false,
+      'secret': process.env.SECRET,
+      'store': MongoStore.create({
+        'mongoUrl': process.env.MONGO_URI,
+        'mongoOptions': {
+          'useNewUrlParser': true,
+          'useUnifiedTopology': true
+        }
+      })
+    }));
+    app.use(passport.initialize());
+    app.use(passport.session());
 
     // Application routes.
     app.use('/api/v1/contact', contactRoute);
