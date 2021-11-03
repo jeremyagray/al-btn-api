@@ -6,8 +6,6 @@
 
 'use strict';
 
-const bcrypt = require('bcrypt');
-
 // Middleware.
 const logger = require('../middleware/logger.js');
 
@@ -63,24 +61,21 @@ const createUser = async (request, response) => {
   try {
     if (emailAvailable(request.body.email)
         && request.body.password === request.body.passwordToo) {
-      const salt = await bcrypt.genSalt(10);
-      const hash = await bcrypt.hash(request.body.password, salt);
 
       const userModel = new User();
       await userModel.create({
         'firstName': request.body.firstName,
         'lastName': request.body.lastName,
         'email': request.body.email,
-        'salt': salt,
-        'password': hash
+        'password': request.body.password
       });
 
     }
     return response.json({
       'message': 'Check the provided email for activation instructions.  Thanks!'
     });
-  } catch {
-    logger.error('POST /api/v1/users/new user creation failed');
+  } catch (error) {
+    logger.error(`POST /api/v1/users/new user creation failed: ${error}`);
     return response
       .status(500)
       .json({
