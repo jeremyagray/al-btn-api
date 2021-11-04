@@ -32,6 +32,8 @@ const contactRoute = require('./routes/contact.js');
 const countyRoute = require('./routes/county.js');
 const geographyRoute = require('./routes/geography.js');
 const weatherRoute = require('./routes/weather.js');
+const authenticationRoute = require('./routes/authenticate.js');
+const userRoute = require('./routes/user.js');
 
 // Express.
 const app = express();
@@ -134,6 +136,7 @@ async function start() {
     app.use('/api/v1/counties', countyRoute);
     app.use('/api/v1/geography', geographyRoute);
     app.use('/api/v1/weather', weatherRoute);
+    app.use('/api/v1/auth', authenticationRoute);
     app.use('/api/v1/users', userRoute);
     
     // 404 middleware.
