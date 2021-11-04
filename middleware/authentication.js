@@ -61,3 +61,39 @@ const PasswordStrategy = new Strategy(
 );
 
 exports.PasswordStrategy = PasswordStrategy;
+
+const SECRET = 'this is a super duper secret';
+
+const generateToken = async (payload) => {
+  logger.debug('middleware/authentication.js:generateToken: generating token');
+
+  try {
+    const token = await jwt.sign(payload, SECRET, { 'expiresIn': '86400s' });
+
+    return token;
+  } catch (error) {
+    logger.debug(`middleware/authentication.js:generateToken: ${error}`);
+
+    return;
+  }
+}
+
+exports.generateToken = generateToken;
+
+const authenticateToken = async (token, cb) => {
+  try {
+    return cb(null, { '_id': token._id, 'email': token.email });
+  } catch (error) {
+    cb(error, null);
+  }
+};
+
+const TokenStrategy = new JwtStrategy(
+  {
+    'secretOrKey': SECRET,
+    'jwtFromRequest': tokenExtractor
+  },
+  authenticateToken
+);
+
+exports.TokenStrategy = TokenStrategy;
