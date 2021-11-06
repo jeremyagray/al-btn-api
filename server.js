@@ -32,7 +32,7 @@ const contactRoute = require('./routes/contact.js');
 const countyRoute = require('./routes/county.js');
 const geographyRoute = require('./routes/geography.js');
 const weatherRoute = require('./routes/weather.js');
-const authenticationRoute = require('./routes/authenticate.js');
+const authenticationRoute = require('./routes/authentication.js');
 const userRoute = require('./routes/user.js');
 
 // Express.

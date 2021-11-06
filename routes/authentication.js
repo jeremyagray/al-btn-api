@@ -18,7 +18,7 @@ const serializeUser = require('../middleware/authentication.js').serializeUser;
 const deserializeUser = require('../middleware/authentication.js').deserializeUser;
 
 // Controllers.
-const authController = require('../controllers/authenticate.js');
+const authController = require('../controllers/authentication.js');
 
 passport.use(PasswordStrategy);
 passport.use(TokenStrategy);
