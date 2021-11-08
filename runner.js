@@ -23,6 +23,22 @@ fs.readdirSync(testDir).filter((file) => {
   mocha.addFile(path.join(testDir, file));
 });
 
+// Add the '*.test.js' JavaScript files to mocha.
+const dirs = [
+  'controllers',
+  'middleware',
+  'models',
+  'routes'
+];
+dirs.forEach((dir) => {
+  // eslint-disable-next-line security/detect-non-literal-fs-filename
+  fs.readdirSync(dir).filter((file) => {
+    return file.substr(-8) === '.test.js';
+  }).forEach((file) => {
+    mocha.addFile(path.join(dir, file));
+  });
+});
+
 // Get a new event emitter.
 const emitter = new EventEmitter();  
 // Define run() for use in server.js as runner.run().
