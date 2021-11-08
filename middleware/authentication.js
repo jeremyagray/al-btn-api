@@ -6,17 +6,21 @@
 
 'use strict';
 
+const crypto = require('crypto');
+const jose = require('jose');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const Strategy = require('passport-local').Strategy;
 const JwtStrategy = require('passport-jwt').Strategy;
-const tokenExtractor = require('passport-jwt').ExtractJwt.fromBodyField('token');
+const accessTokenExtractor = require('passport-jwt').ExtractJwt.fromAuthHeaderAsBearerToken();
+const refreshTokenExtractor = require('passport-jwt').ExtractJwt.fromAuthHeaderAsBearerToken();
 
 // Middleware.
 const logger = require('../middleware/logger.js');
 
 // Models.
 const User = require('../models/user.js');
+const RefreshToken = require('../models/refreshToken.js');
 
 const serializeUser = (user, cb) => {
   cb(null, user._id);
@@ -77,6 +81,42 @@ const generateToken = async (payload) => {
     return;
   }
 }
+
+// Generate a new refresh token in the provided token family.
+const generateRefreshToken = async (user, rootTokenId = null, ip = '127.0.0.1') => {
+  logger.debug('middleware/authentication.js:generateRefreshToken: generating refresh token');
+
+  try {
+    const token = await crypto.randomBytes(64).toString('hex');
+
+    const refreshToken = await RefreshToken().create({
+      'rootId': rootTokenId,
+      'token': token,
+      'userId': user._id,
+      // 'expiresAt': Date.now() + 24 * 60 * 60 * 1000,
+      // 'createdAt': Date.now(),
+      'createdByIp': ip,
+    });
+
+    // const encryptedToken = await new jose.EncryptJWT({
+    //   'userId': user._id,
+    //   'email': user.email
+    // })
+    //   .setIssuedAt()
+    //   .setIssuer('flyquackswim.com/al-btn')
+    //   .setExpirationTime(refreshToken.expiresAt - refreshToken.createdAt);
+    //   .encrypt(encryptSecret);
+
+    // return encryptedToken;
+    return refreshToken;
+  } catch (error) {
+    logger.debug(`middleware/authentication.js:generateRefreshToken: ${error}`);
+
+    return;
+  }
+};
+
+exports.generateRefreshToken = generateRefreshToken;
 
 exports.generateToken = generateToken;
 
