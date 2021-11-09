@@ -66,21 +66,25 @@ const PasswordStrategy = new Strategy(
 
 exports.PasswordStrategy = PasswordStrategy;
 
-const SECRET = 'this is a super duper secret';
+const accessSecret = 'this is a super duper secret';
+const refreshSecret = 'this is another super duper secret';
+// const encryptSecret = 'this is yet another super duper secret';
 
-const generateToken = async (payload) => {
-  logger.debug('middleware/authentication.js:generateToken: generating token');
+const generateAccessToken = async (payload) => {
+  logger.debug('middleware/authentication.js:generateAccessToken: generating access token');
 
   try {
-    const token = await jwt.sign(payload, SECRET, { 'expiresIn': '86400s' });
+    const accessToken = await jwt.sign(payload, accessSecret, { 'expiresIn': '86400s' });
 
-    return token;
+    return accessToken;
   } catch (error) {
-    logger.debug(`middleware/authentication.js:generateToken: ${error}`);
+    logger.debug(`middleware/authentication.js:generateAccessToken: ${error}`);
 
     return;
   }
-}
+};
+
+exports.generateAccessToken = generateAccessToken;
 
 // Generate a new refresh token in the provided token family.
 const generateRefreshToken = async (user, rootTokenId = null, ip = '127.0.0.1') => {
@@ -88,27 +92,30 @@ const generateRefreshToken = async (user, rootTokenId = null, ip = '127.0.0.1') 
 
   try {
     const token = await crypto.randomBytes(64).toString('hex');
+    const encryptSecret = await jose.generateSecret('A256GCM');
 
     const refreshToken = await RefreshToken().create({
       'rootId': rootTokenId,
       'token': token,
       'userId': user._id,
-      // 'expiresAt': Date.now() + 24 * 60 * 60 * 1000,
-      // 'createdAt': Date.now(),
       'createdByIp': ip,
     });
 
-    // const encryptedToken = await new jose.EncryptJWT({
-    //   'userId': user._id,
-    //   'email': user.email
-    // })
-    //   .setIssuedAt()
-    //   .setIssuer('flyquackswim.com/al-btn')
-    //   .setExpirationTime(refreshToken.expiresAt - refreshToken.createdAt);
-    //   .encrypt(encryptSecret);
+    const encryptedToken = await new jose.EncryptJWT({
+      'userId': user._id,
+      'email': user.email,
+      'token': token,
+    })
+      .setIssuedAt(refreshToken.createdAt.getTime())
+      .setIssuer('flyquackswim.com/al-btn')
+      .setExpirationTime(`${refreshToken.expiresAt - refreshToken.createdAt}s`)
+      .setProtectedHeader({
+        'alg': 'dir',
+        'enc': 'A256GCM'
+      })
+      .encrypt(encryptSecret);
 
-    // return encryptedToken;
-    return refreshToken;
+    return encryptedToken;
   } catch (error) {
     logger.debug(`middleware/authentication.js:generateRefreshToken: ${error}`);
 
@@ -118,9 +125,89 @@ const generateRefreshToken = async (user, rootTokenId = null, ip = '127.0.0.1') 
 
 exports.generateRefreshToken = generateRefreshToken;
 
-exports.generateToken = generateToken;
+// Replace a refresh token.
+const replaceRefreshToken = async (token, newTokenId, ip) => {
+  logger.debug('middleware/authentication.js:replaceRefreshToken: replacing refresh token');
 
-const authenticateToken = async (token, cb) => {
+  try {
+    let refreshToken = await RefreshToken().findOne({
+      'token': token
+    });
+
+    refreshToken = await refreshToken.update({
+      'revokedAt': Date.now(),
+      'replacedById': newTokenId,
+      'revokedByIp': ip
+    });
+
+    return refreshToken;
+  } catch (error) {
+    logger.debug(`middleware/authentication.js:replaceRefreshToken: ${error}`);
+
+    return;
+  }
+};
+
+exports.replaceRefreshToken = replaceRefreshToken;
+
+// Revoke a refresh token.
+const revokeRefreshToken = async (token, ip) => {
+  logger.debug('middleware/authentication.js:revokeRefreshToken: revoking refresh token');
+
+  try {
+    let refreshToken = await RefreshToken().findOne({
+      'token': token
+    });
+
+    refreshToken = await refreshToken.update({
+      'revokedAt': Date.now(),
+      'revokedByIp': ip
+    });
+
+    return refreshToken;
+  } catch (error) {
+    logger.debug(`middleware/authentication.js:revokeRefreshToken: ${error}`);
+
+    return;
+  }
+};
+
+exports.revokeRefreshToken = revokeRefreshToken;
+
+// Revoke a refresh token familiy.
+const revokeRefreshTokenFamily = async (token, ip) => {
+  logger.debug('middleware/authentication.js:revokeRefreshTokenFamily: revoking refresh token family');
+
+  try {
+    const refreshToken = await RefreshToken().findOne({
+      'token': token
+    });
+
+    const tokenFamily = await RefreshToken().find({
+      'rootId': refreshToken.rootId
+    });
+
+    let revoked = 0;
+    for (let i = 0; i < tokenFamily.length; i++) {
+      // eslint-disable-next-line security/detect-object-injection
+      if (! tokenFamily[i].revokedAt) {
+        // eslint-disable-next-line security/detect-object-injection
+        revokeRefreshToken(tokenFamily[i].token, ip);
+        revoked++;
+      }
+    }
+
+    return revoked;
+  } catch (error) {
+    logger.debug(`middleware/authentication.js:revokeRefreshTokenFamily: ${error}`);
+
+    return;
+  }
+};
+
+exports.revokeRefreshTokenFamily = revokeRefreshTokenFamily;
+
+const authenticateAccessToken = async (token, cb) => {
   try {
     return cb(null, { '_id': token._id, 'email': token.email });
   } catch (error) {
@@ -128,12 +215,12 @@ const authenticateToken = async (token, cb) => {
   }
 };
 
-const TokenStrategy = new JwtStrategy(
+const AccessTokenStrategy = new JwtStrategy(
   {
-    'secretOrKey': SECRET,
-    'jwtFromRequest': tokenExtractor
+    'secretOrKey': accessSecret,
+    'jwtFromRequest': accessTokenExtractor
   },
-  authenticateToken
+  authenticateAccessToken
 );
 
-exports.TokenStrategy = TokenStrategy;
+exports.AccessTokenStrategy = AccessTokenStrategy;

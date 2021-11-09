@@ -40,12 +40,15 @@ describe('refresh token middleware', async function() {
         'email': 'jd@example.net'
       });
 
-      expect(refreshToken).to.be.a('object');
-      expect(refreshToken._id.toString()).to.be.equal(refreshToken.rootId);
+      expect(refreshToken).to.be.a('string');
+      // expect(refreshToken._id.toString()).to.be.equal(refreshToken.rootId);
 
       // const isValid = await bcrypt.compare(token, refreshToken.token);
       // expect(isValid).to.be.true;
 
+      // const { payload, protectedHeader } = await jose.jwtDecrypt(encryptedToken, encryptSecret, { 'issuer': 'flyquackswim.com/al-btn' });
+      // console.log(payload);
+      // console.log(protectedHeader);
     } catch (error) {
       console.log(error);
       throw error;
