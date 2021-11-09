@@ -6,15 +6,11 @@
 
 'use strict';
 
-const bcrypt = require('bcrypt');
-const crypto = require('crypto');
+const jose = require('jose');
 const mongoose = require('mongoose');
 
 const chai = require('chai');
 const expect = chai.expect;
-// const chaiHttp = require('chai-http');
-
-// chai.use(chaiHttp);
 
 const RefreshToken = require('../models/refreshToken.js');
 const authMiddleware = require('../middleware/authentication.js');
@@ -35,20 +31,25 @@ describe('refresh token middleware', async function() {
 
   it('should generate a refresh token', async function() {
     try {
+      const key = await authMiddleware.createEncryptionKey();
+      const id = mongoose.Types.ObjectId().toString();
+      const email = 'jd@example.net';
       const refreshToken = await authMiddleware.generateRefreshToken({
-        '_id': mongoose.Types.ObjectId(),
-        'email': 'jd@example.net'
+        '_id': id,
+        'email': email
       });
 
       expect(refreshToken).to.be.a('string');
-      // expect(refreshToken._id.toString()).to.be.equal(refreshToken.rootId);
 
-      // const isValid = await bcrypt.compare(token, refreshToken.token);
-      // expect(isValid).to.be.true;
+      const { payload, protectedHeader } = await jose.jwtDecrypt(refreshToken, key, { 'issuer': 'flyquackswim.com/al-btn' });
+      expect(payload).to.be.a('object');
+      expect(payload.userId).to.be.equal(id);
+      expect(payload.email).to.be.equal(email);
+      expect(payload.iss).to.be.equal('flyquackswim.com/al-btn');
 
-      // const { payload, protectedHeader } = await jose.jwtDecrypt(encryptedToken, encryptSecret, { 'issuer': 'flyquackswim.com/al-btn' });
-      // console.log(payload);
-      // console.log(protectedHeader);
+      expect(protectedHeader).to.be.a('object');
+      expect(protectedHeader.alg).to.be.equal('dir');
+      expect(protectedHeader.enc).to.be.equal('A256GCM');
     } catch (error) {
       console.log(error);
       throw error;

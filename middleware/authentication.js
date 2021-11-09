@@ -68,7 +68,6 @@ exports.PasswordStrategy = PasswordStrategy;
 
 const accessSecret = 'this is a super duper secret';
 const refreshSecret = 'this is another super duper secret';
-// const encryptSecret = 'this is yet another super duper secret';
 
 const generateAccessToken = async (payload) => {
   logger.debug('middleware/authentication.js:generateAccessToken: generating access token');
@@ -86,13 +85,26 @@ const generateAccessToken = async (payload) => {
 
 exports.generateAccessToken = generateAccessToken;
 
+// Create an encryption key for encrypting tokens.
+let encryptionKey = null;
+const createEncryptionKey = async () => {
+  encryptionKey = await jose.generateSecret('A256GCM');
+
+  return encryptionKey;
+};
+
+exports.createEncryptionKey = createEncryptionKey;
+
 // Generate a new refresh token in the provided token family.
 const generateRefreshToken = async (user, rootTokenId = null, ip = '127.0.0.1') => {
   logger.debug('middleware/authentication.js:generateRefreshToken: generating refresh token');
 
   try {
+    if (! encryptionKey) {
+      await createEncryptionKey();
+    }
+
     const token = await crypto.randomBytes(64).toString('hex');
-    const encryptSecret = await jose.generateSecret('A256GCM');
 
     const refreshToken = await RefreshToken().create({
       'rootId': rootTokenId,
@@ -113,7 +125,7 @@ const generateRefreshToken = async (user, rootTokenId = null, ip = '127.0.0.1') 
         'alg': 'dir',
         'enc': 'A256GCM'
       })
-      .encrypt(encryptSecret);
+      .encrypt(encryptionKey);
 
     return encryptedToken;
   } catch (error) {
