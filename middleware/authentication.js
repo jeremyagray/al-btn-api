@@ -69,22 +69,6 @@ exports.PasswordStrategy = PasswordStrategy;
 const accessSecret = 'this is a super duper secret';
 const refreshSecret = 'this is another super duper secret';
 
-const generateAccessToken = async (payload) => {
-  logger.debug('middleware/authentication.js:generateAccessToken: generating access token');
-
-  try {
-    const accessToken = await jwt.sign(payload, accessSecret, { 'expiresIn': '86400s' });
-
-    return accessToken;
-  } catch (error) {
-    logger.debug(`middleware/authentication.js:generateAccessToken: ${error}`);
-
-    return;
-  }
-};
-
-exports.generateAccessToken = generateAccessToken;
-
 // Create an encryption key for encrypting tokens.
 let encryptionKey = null;
 const createEncryptionKey = async () => {
@@ -94,6 +78,37 @@ const createEncryptionKey = async () => {
 };
 
 exports.createEncryptionKey = createEncryptionKey;
+
+const generateAccessToken = async (user) => {
+  logger.debug('middleware/authentication.js:generateAccessToken: generating access token');
+
+  try {
+    if (! encryptionKey) {
+      await createEncryptionKey();
+    }
+
+    const encryptedToken = await new jose.EncryptJWT({
+      'userId': user._id,
+      'email': user.email
+    })
+      .setIssuedAt(Date.now())
+      .setIssuer('flyquackswim.com/al-btn')
+      .setExpirationTime(`${5 * 60}s`)
+      .setProtectedHeader({
+        'alg': 'dir',
+        'enc': 'A256GCM'
+      })
+      .encrypt(encryptionKey);
+
+    return encryptedToken;
+  } catch (error) {
+    logger.debug(`middleware/authentication.js:generateAccessToken: ${error}`);
+
+    return;
+  }
+};
+
+exports.generateAccessToken = generateAccessToken;
 
 // Generate a new refresh token in the provided token family.
 const generateRefreshToken = async (user, rootTokenId = null, ip = '127.0.0.1') => {
