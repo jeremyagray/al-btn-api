@@ -131,6 +131,33 @@ const refreshTokens = async (request, response) => {
 };
 
 exports.refreshTokens = refreshTokens;
+
+const authenticateAccessToken = async (request, response) => {
+  logger.debug('request:  POST /api/v1/auth/login/authenticateAccessToken');
+
+  try {
+    // get access token
+    const accessToken = request.headers['authorization'].split('bearer ')[1];
+    // decrypt
+    const key = authentication.encryptionKey;
+    const { payload } = await jose.jwtDecrypt(accessToken, key, { 'issuer': 'flyquackswim.com/al-btn' });
+    // if expired, use refresh
+    const exp = new Date(parseInt(payload.exp) * 1000);
+    const now = new Date();
+    if (exp >= now) {
+      // go refresh
+    }
+    // if valid, authenticate
+    const user = await User().findOne({'email': payload.email}).exec();
+
+    logger.debug('request:  POST /api/v1/auth/login/authenticateAccessToken successful');
+    return response
+      .status(200)
+      .json({
+        'message': 'authentication succeeded'
+      });
+
+    logger.debug('request:  POST /api/v1/auth/login/authenticateAccessToken failed');
     return response
       .status(401)
       .json({
@@ -138,7 +165,7 @@ exports.refreshTokens = refreshTokens;
         'token': null
       });
   } catch (error) {
-    logger.error(`POST /api/v1/auth/login/initialize-token authentication error: ${error}`);
+    logger.error(`POST /api/v1/auth/login/authenticateAccessToken error: ${error}`);
 
     return response
       .status(500)
@@ -148,4 +175,4 @@ exports.refreshTokens = refreshTokens;
   }
 };
 
-exports.authenticateForToken = authenticateForToken;
+exports.authenticateAccessToken = authenticateAccessToken;
