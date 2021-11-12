@@ -31,16 +31,23 @@ router.post('/login/password',
   validation.validationErrorReporterJSON,
   passport.authenticate('local'),
   function(request, response) {
-    console.log({ 'message': 'successful login' });
     return response.json({ 'message': 'successful login' });
   }
 );
 
-router.post('/login/initialize-token',
+router.post('/login/initializeTokens',
   validation.validateEmail,
   validation.validatePassword,
   validation.validationErrorReporterJSON,
-  authController.authenticateForToken
+  authController.initializeTokens
+);
+
+router.post('/login/accessToken',
+  authController.authenticateAccessToken
+);
+
+router.post('/login/refreshTokens',
+  authController.refreshTokens
 );
 
 module.exports = router;
