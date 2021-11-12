@@ -132,38 +132,47 @@ const refreshTokens = async (request, response) => {
 
 exports.refreshTokens = refreshTokens;
 
-const authenticateAccessToken = async (request, response) => {
+const authenticateAccessToken = async (request, response, next) => {
   logger.debug('request:  POST /api/v1/auth/login/authenticateAccessToken');
 
   try {
     // get access token
+    console.log(request.headers['authorization']);
     const accessToken = request.headers['authorization'].split('bearer ')[1];
     // decrypt
     const key = authentication.encryptionKey;
-    const { payload } = await jose.jwtDecrypt(accessToken, key, { 'issuer': 'flyquackswim.com/al-btn' });
+    let payload = {};
+
+    try {
+      const { decryptedPayload } = await jose.jwtDecrypt(accessToken, key, { 'issuer': 'flyquackswim.com/al-btn' });
+      payload = decryptedPayload;
+    } catch (decryptError) {
+      logger.debug(`/api/v1/auth/login/authenticateAccessToken decryption error; refresh access token: ${decryptError}`);
+      return response
+        .status(401)
+        .json({
+          'message': 'access token invalid'
+        });
+    }
+
     // if expired, use refresh
     const exp = new Date(parseInt(payload.exp) * 1000);
     const now = new Date();
-    if (exp >= now) {
-      // go refresh
+
+    if (now >= exp) {
+      logger.debug('POST /api/v1/auth/login/authenticateAccessToken refresh access token');
+      return response
+        .status(401)
+        .json({
+          'message': 'access token expired'
+        });
     }
+
     // if valid, authenticate
     const user = await User().findOne({'email': payload.email}).exec();
 
     logger.debug('request:  POST /api/v1/auth/login/authenticateAccessToken successful');
-    return response
-      .status(200)
-      .json({
-        'message': 'authentication succeeded'
-      });
-
-    logger.debug('request:  POST /api/v1/auth/login/authenticateAccessToken failed');
-    return response
-      .status(401)
-      .json({
-        'message': 'authentication failed',
-        'token': null
-      });
+    return next(null, { '_id': user._id, 'email': user.email });
   } catch (error) {
     logger.error(`POST /api/v1/auth/login/authenticateAccessToken error: ${error}`);
 
