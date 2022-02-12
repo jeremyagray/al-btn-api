@@ -12,6 +12,7 @@ const winston = require('winston');
 const logger = winston.createLogger({
   'level': 'silly',
   'format': winston.format.combine(
+    winston.format.errors(),
     winston.format.uncolorize(),
     winston.format.timestamp(),
     winston.format.json()
