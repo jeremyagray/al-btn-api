@@ -11,17 +11,11 @@ require('dotenv').config();
 
 const cors = require('cors');
 const express = require('express');
-const favicon = require('serve-favicon');
-const MongoStore = require('connect-mongo');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 const passport = require('passport');
 const path = require('path');
-const session = require('express-session');
 const winston = require('winston');
-
-// Test runner.
-const runner = require('./runner.js');
 
 // Middleware.
 const helmet = require('./middleware/helmet.js');
@@ -32,11 +26,11 @@ const contactRoute = require('./routes/contact.js');
 const countyRoute = require('./routes/county.js');
 const geographyRoute = require('./routes/geography.js');
 const weatherRoute = require('./routes/weather.js');
-const authenticationRoute = require('./routes/authentication.js');
 const userRoute = require('./routes/user.js');
 
 // Express.
 const app = express();
+let server;
 
 // Configuration variables.
 const port = process.env.PORT || 3000;
@@ -45,16 +39,15 @@ const version = '0.0.1';
 
 async function start() {
   // Configure mongoose.
-  const MONGOOSE_OPTIONS = {
-    'useCreateIndex': true,
-    'useNewUrlParser': true,
-    'useUnifiedTopology': true,
-    'useFindAndModify': false
-  };
+  const MONGOOSE_OPTIONS = {};
 
   try {
     // Initialize mongoose connection.
-    await mongoose.connect(process.env.MONGO_URI, MONGOOSE_OPTIONS);
+    if (process.env.NODE_ENV === 'test') {
+      await mongoose.connect(process.env.MONGO_TEST_URI, MONGOOSE_OPTIONS);
+    } else {
+      await mongoose.connect(process.env.MONGO_URI, MONGOOSE_OPTIONS);
+    }
 
     // Logging middleware.
     if (process.env.NODE_ENV === 'development') {
@@ -95,48 +88,15 @@ async function start() {
       optionSuccessStatus: 200
     }));
 
-    // Favicon serving middleware.
-    app.use(favicon(path.join(process.cwd(), 'public', 'favicon.ico')));
-    
     // Use body parser for post data.
     app.use(express.urlencoded({extended: false}));
     app.use(express.json());
-
-    // Set static directory to root.
-    app.use(express.static(path.join(process.cwd(), 'public')));
-
-    // Set view directory and view engine.
-    // app.set('views', path.join(process.cwd(), 'views'));
-    // app.set('view engine', 'pug');
-
-    // Serve index.
-    // app.route('/')
-    //   .get(function(request, response) {
-    //     return response.render('index');
-    //   });
-
-    // Passport/session support.
-    app.use(session({
-      'resave': false,
-      'saveUninitialized': false,
-      'secret': process.env.SECRET,
-      'store': MongoStore.create({
-        'mongoUrl': process.env.MONGO_URI,
-        'mongoOptions': {
-          'useNewUrlParser': true,
-          'useUnifiedTopology': true
-        }
-      })
-    }));
-    app.use(passport.initialize());
-    app.use(passport.session());
 
     // Application routes.
     app.use('/api/v1/contact', contactRoute);
     app.use('/api/v1/counties', countyRoute);
     app.use('/api/v1/geography', geographyRoute);
     app.use('/api/v1/weather', weatherRoute);
-    app.use('/api/v1/auth', authenticationRoute);
     app.use('/api/v1/users', userRoute);
     
     // 404 middleware.
@@ -146,24 +106,21 @@ async function start() {
         .render('404');
     });
 
-    // Run server and/or tests.
-    await app.listen(port);
-    logger.info(`${name}@${version} listening on port ${port}`);
-    if (process.env.NODE_ENV === 'test'
-        || process.env.NODE_ENV === 'development') {
-      logger.info(`${name}@${version} preparing to run tests`);
-      setTimeout(function () {
-        try {
-          runner.run();
-        } catch (error) {
-          logger.info(`${name}@${version}:  some tests failed`);
-          logger.error(error);
-        }
-      }, 1500);
-    }
+    // Run server.
+    const host = process.env?.HOST || 'localhost';
+    server = app.listen(port, process.env.HOST);
+    logger.info(`${name}@${version} listening on ${host}:${port}`);
   } catch (error) {
+    if (server && server.listening) {
+      server.close();
+    }
+
     logger.error(error);
-    logger.error(`${name}@${version} cowardly refusing to continue with errors...`);
+    logger.error(
+      `${name}@${version} cowardly refusing to continue with errors...`
+    );
+
+    process.exitCode = 1;
   }
 }
 
@@ -172,5 +129,4 @@ async function start() {
   await start(); 
 })();
 
-// Export app for testing.
 module.exports = app;
