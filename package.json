@@ -9,6 +9,7 @@
     "express": "^4",
     "express-validator": "^6",
     "helmet": "^5",
+    "jwks-rsa": "^2.0.5",
     "mongoose": "^6",
     "mongoose-geojson-schema": "^2",
     "morgan": "^1",
