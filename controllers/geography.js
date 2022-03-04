@@ -367,7 +367,6 @@ const getStateCentroidByUsps = async (request, response) => {
         {'_id': false, '__v': false, 'name': false, 'geoid': false, 'usps': false, 'geometry': false}
       ).exec();
 
-    console.log(state);
     return response
       .status(200)
       .json(state.centroid);
